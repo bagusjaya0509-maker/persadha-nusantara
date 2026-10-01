@@ -1,0 +1,36 @@
+<!--{"judul":"Kontak","deskripsi":"Alamat sekretariat, WhatsApp, dan email Dewan Pimpinan Pusat Persadha Nusantara di Jakarta Selatan.","path":"kontak/","nav":"kontak","prioritas":"0.6"}-->
+<main id="isi">
+  <header class="kepala-halaman">
+    <div class="wadah">
+      <nav class="remah" aria-label="Remah roti"><a href="{{BASE}}">Beranda</a><span aria-hidden="true">/</span><span>Kontak</span></nav>
+      <h1>Sekretariat DPP</h1>
+      <p class="lead">Surat resmi, undangan, dan permohonan audiensi ditujukan ke alamat sekretariat. Untuk pertanyaan cepat, hubungi kami lewat WhatsApp.</p>
+    </div>
+    <div class="kepala-halaman-gerbang" aria-hidden="true"><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg></div>
+  </header>
+  <section class="bagian">
+    <div class="wadah kontak-kisi">
+      <div class="kontak-daftar">
+        <div class="kartu kontak-butir">
+          <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-map-pin"/></svg>
+          <div><h2>Alamat</h2><address>Jl. Sawah Lunto No. 50<br>Kelurahan Pasar Manggis, Kecamatan Setiabudi<br>Jakarta Selatan 12970</address><a class="tombol-teks" href="{{kontak.peta}}" target="_blank" rel="noopener">Buka di Google Maps <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-external-link"/></svg></a></div>
+        </div>
+        <div class="kartu kontak-butir">
+          <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-whatsapp"/></svg>
+          <div><h2>WhatsApp dan telepon</h2><p class="kode" style="font-size:1.1rem">{{kontak.telepon}}</p><a class="tombol tombol-utama kecil" href="https://wa.me/{{kontak.whatsapp}}?text=Salam%2C%20saya%20ingin%20bertanya%20kepada%20sekretariat%20Persadha%20Nusantara." target="_blank" rel="noopener">Kirim pesan WhatsApp</a></div>
+        </div>
+        <div class="kartu kontak-butir">
+          <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-mail"/></svg>
+          <div><h2>Email</h2><p><a href="mailto:{{kontak.email}}">{{kontak.email}}</a></p><p class="petunjuk" style="color:var(--tinta-2);font-size:.92rem;margin:0">Lampirkan surat resmi dalam bentuk PDF bila ada.</p></div>
+        </div>
+        <div class="pesan">
+          <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-info"/></svg>
+          <p>Ingin melaporkan konflik atau persoalan hukum? Pakai <a href="{{BASE}}layanan/aduan/">formulir pengaduan</a> supaya aduan Anda mendapat nomor dan bisa dipantau.</p>
+        </div>
+      </div>
+      <div class="peta">
+        <iframe title="Peta lokasi sekretariat DPP Persadha Nusantara" src="https://www.google.com/maps?q=Jl.%20Sawah%20Lunto%20No.%2050%2C%20Pasar%20Manggis%2C%20Setiabudi%2C%20Jakarta%20Selatan&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+</main>

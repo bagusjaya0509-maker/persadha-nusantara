@@ -1,0 +1,178 @@
+rules_version = '2';
+
+// Aturan akses Cloud Firestore — situs Persadha Nusantara.
+// Salin seluruh isi berkas ini ke Firebase Console > Firestore Database > Rules, lalu Publish.
+//
+// Prinsip:
+//  - Kabar terbit boleh dibaca siapa saja; hanya pengurus yang bisa menulis.
+//  - Aduan, aspirasi, lampiran, dan pendaftaran anggota hanya terbaca oleh
+//    pemiliknya dan pengurus. Catatan internal hanya untuk pengurus.
+//  - Pengurus = email di daftar adminUtama (harus terverifikasi) ATAU punya
+//    dokumen di koleksi admin/{uid} yang ditambahkan pengurus lain.
+//  - Status aduan dan nomor anggota hanya bisa diubah pengurus.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- fungsi bantu ----------
+    function masuk() { return request.auth != null; }
+    function saya() { return request.auth.uid; }
+    function adminUtama() {
+      // SAMAKAN dengan "adminUtama" di situs.config.json
+      return masuk() && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in ['dpppersadhanusantara@gmail.com'];
+    }
+    function pengurus() {
+      return adminUtama() || (masuk() && exists(/databases/$(database)/documents/admin/$(saya())));
+    }
+    function tidakDiblokir() { return !exists(/databases/$(database)/documents/blokir/$(saya())); }
+    function teks(v, maks) { return v is string && v.size() <= maks; }
+    function teksWajib(v, min, maks) { return v is string && v.size() >= min && v.size() <= maks; }
+    function hanyaKunci(d, daftar) { return d.keys().hasOnly(daftar); }
+    function yangBerubah() { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function laporanMilikSaya(id) {
+      return get(/databases/$(database)/documents/laporan/$(id)).data.uid == saya();
+    }
+
+    // ---------- kabar ----------
+    match /kabar/{slug} {
+      allow read: if true;
+      allow write: if pengurus() && slug.matches('^[a-z0-9-]{1,90}$');
+    }
+    match /kabarIsi/{slug} {
+      allow read: if true;
+      allow write: if pengurus() && slug.matches('^[a-z0-9-]{1,90}$');
+    }
+    match /draf/{slug} {
+      allow read, write: if pengurus();
+    }
+
+    // ---------- profil pengguna ----------
+    function profilSah(d) {
+      return teksWajib(d.nama, 1, 80) && teks(d.wa, 20) && teks(d.provinsi, 40) && teks(d.kota, 60);
+    }
+    match /pengguna/{id} {
+      allow get: if masuk() && (saya() == id || pengurus());
+      allow list: if pengurus();
+      allow create: if masuk() && saya() == id
+        && hanyaKunci(request.resource.data, ['nama', 'email', 'wa', 'provinsi', 'kota', 'dibuat', 'diubah'])
+        && profilSah(request.resource.data)
+        && request.resource.data.email == request.auth.token.email.lower()
+        && request.resource.data.dibuat == request.time;
+      allow update: if masuk() && saya() == id
+        && yangBerubah().hasOnly(['nama', 'wa', 'provinsi', 'kota', 'diubah'])
+        && profilSah(request.resource.data);
+      allow delete: if false;
+    }
+
+    // ---------- pengurus & blokir ----------
+    match /admin/{id} {
+      allow get: if masuk() && (saya() == id || pengurus());
+      allow list, write: if pengurus();
+    }
+    match /blokir/{id} {
+      allow get: if masuk() && (saya() == id || pengurus());
+      allow list, write: if pengurus();
+    }
+
+    // ---------- aduan & aspirasi ----------
+    function laporanSah(d) {
+      return hanyaKunci(d, ['jenis', 'kategori', 'bidang', 'judul', 'uraian', 'tanggalKejadian', 'pihak', 'mendesak', 'lokasi',
+          'bantuan', 'wa', 'rahasia', 'nomor', 'uid', 'pelapor', 'status', 'jumlahLampiran', 'dibuat', 'diubah',
+          'balasanPelapor', 'dibacaAdmin'])
+        && d.jenis in ['aduan', 'aspirasi']
+        && teks(d.kategori, 40) && teks(d.bidang, 40)
+        && teksWajib(d.judul, 5, 160)
+        && teksWajib(d.uraian, 10, 8000)
+        && teks(d.tanggalKejadian, 10) && teks(d.pihak, 300)
+        && d.mendesak is bool && d.rahasia is bool
+        && d.lokasi is map && hanyaKunci(d.lokasi, ['provinsi', 'kota', 'alamat'])
+        && teks(d.lokasi.provinsi, 40) && teks(d.lokasi.kota, 60) && teks(d.lokasi.alamat, 200)
+        && d.bantuan is list && d.bantuan.size() <= 6
+        && teks(d.wa, 20) && teksWajib(d.nomor, 8, 20)
+        && d.pelapor is map && hanyaKunci(d.pelapor, ['nama', 'email', 'wa'])
+        && d.jumlahLampiran is int && d.jumlahLampiran >= 0 && d.jumlahLampiran <= 4;
+    }
+
+    match /laporan/{id} {
+      allow get: if masuk() && (resource.data.uid == saya() || pengurus());
+      allow list: if pengurus() || (masuk() && resource.data.uid == saya());
+      allow create: if masuk() && tidakDiblokir()
+        && laporanSah(request.resource.data)
+        && request.resource.data.uid == saya()
+        && request.resource.data.status == 'baru'
+        && request.resource.data.dibuat == request.time
+        && request.resource.data.diubah == request.time
+        && request.resource.data.balasanPelapor == null
+        && request.resource.data.dibacaAdmin == null;
+      allow update: if
+        (pengurus()
+          && request.resource.data.status in ['baru', 'ditinjau', 'diproses', 'selesai', 'ditutup']
+          && yangBerubah().hasOnly(['status', 'diubah', 'dibacaAdmin', 'ditangani', 'balasanPelapor']))
+        || (masuk() && resource.data.uid == saya()
+          && yangBerubah().hasOnly(['balasanPelapor'])
+          && request.resource.data.balasanPelapor == request.time);
+      allow delete: if false;
+
+      match /tanggapan/{tid} {
+        allow read: if masuk() && (pengurus() || laporanMilikSaya(id));
+        allow create: if masuk()
+          && hanyaKunci(request.resource.data, ['oleh', 'uid', 'nama', 'pesan', 'statusBaru', 'dibuat'])
+          && request.resource.data.uid == saya()
+          && teksWajib(request.resource.data.pesan, 1, 3000)
+          && teks(request.resource.data.nama, 120)
+          && request.resource.data.dibuat == request.time
+          && ((request.resource.data.oleh == 'admin' && pengurus())
+            || (request.resource.data.oleh == 'pelapor' && request.resource.data.statusBaru == null && laporanMilikSaya(id)));
+        allow update, delete: if false;
+      }
+
+      match /lampiran/{lid} {
+        allow read: if masuk() && (pengurus() || laporanMilikSaya(id));
+        allow create: if masuk() && lid in ['0', '1', '2', '3'] && laporanMilikSaya(id)
+          && hanyaKunci(request.resource.data, ['nama', 'tipe', 'ukuran', 'data', 'dibuat'])
+          && teks(request.resource.data.nama, 120)
+          && request.resource.data.tipe in ['image/jpeg', 'application/pdf']
+          && request.resource.data.data is string && request.resource.data.data.size() < 1000000
+          && request.resource.data.dibuat == request.time;
+        allow update, delete: if false;
+      }
+
+      match /internal/{nid} {
+        allow read, create: if pengurus();
+        allow update, delete: if false;
+      }
+    }
+
+    // ---------- keanggotaan ----------
+    function anggotaSah(d) {
+      return hanyaKunci(d, ['nama', 'jenisKelamin', 'tanggalLahir', 'wa', 'pekerjaan', 'provinsi', 'kota', 'alamat', 'bidang',
+          'alasan', 'uid', 'email', 'status', 'nomorAnggota', 'catatanAdmin', 'dibuat', 'diubah', 'diputuskan'])
+        && teksWajib(d.nama, 2, 80) && d.jenisKelamin in ['L', 'P'] && teks(d.tanggalLahir, 10)
+        && teks(d.wa, 20) && teks(d.pekerjaan, 80) && teks(d.provinsi, 40) && teks(d.kota, 60) && teks(d.alamat, 200)
+        && d.bidang is list && d.bidang.size() >= 1 && d.bidang.size() <= 8 && teks(d.alasan, 1500);
+    }
+
+    match /anggota/{id} {
+      allow get: if masuk() && (saya() == id || pengurus());
+      allow list: if pengurus();
+      allow create: if masuk() && saya() == id && tidakDiblokir()
+        && anggotaSah(request.resource.data)
+        && request.resource.data.uid == saya()
+        && request.resource.data.status == 'menunggu'
+        && request.resource.data.nomorAnggota == ''
+        && request.resource.data.catatanAdmin == ''
+        && request.resource.data.dibuat == request.time;
+      allow update: if
+        (pengurus()
+          && request.resource.data.status in ['menunggu', 'diterima', 'ditolak']
+          && yangBerubah().hasOnly(['status', 'catatanAdmin', 'nomorAnggota', 'diubah', 'diputuskan']))
+        || (masuk() && saya() == id && tidakDiblokir()
+          && resource.data.status in ['menunggu', 'ditolak']
+          && request.resource.data.status == 'menunggu'
+          && anggotaSah(request.resource.data)
+          && !yangBerubah().hasAny(['uid', 'nomorAnggota', 'catatanAdmin', 'dibuat', 'diputuskan']));
+      allow delete: if false;
+    }
+  }
+}

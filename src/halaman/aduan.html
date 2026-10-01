@@ -1,0 +1,98 @@
+<!--{"judul":"Pengaduan","deskripsi":"Laporkan konflik, diskriminasi, sengketa tanah pura, atau hambatan beribadah yang menimpa umat Hindu. Setiap aduan mendapat nomor dan bisa dipantau.","path":"layanan/aduan/","nav":"layanan","skrip":["lapor.js"],"prioritas":"0.9"}-->
+<main id="isi">
+  <header class="kepala-halaman">
+    <div class="wadah">
+      <nav class="remah" aria-label="Remah roti"><a href="{{BASE}}">Beranda</a><span aria-hidden="true">/</span><a href="{{BASE}}layanan/">Layanan</a><span aria-hidden="true">/</span><span>Pengaduan</span></nav>
+      <h1>Laporkan persoalan yang menimpa umat</h1>
+      <p class="lead">Ceritakan apa yang terjadi selengkap yang Anda tahu. Aduan hanya dibaca pengurus yang menangani dan tidak pernah ditampilkan di situs.</p>
+    </div>
+    <div class="kepala-halaman-gerbang" aria-hidden="true"><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg></div>
+  </header>
+  <section class="bagian">
+    <div class="wadah tata-layanan">
+      <div>
+        <div data-pesan-gerbang></div>
+        <div data-hasil hidden></div>
+        <form class="formulir" data-lapor="aduan" novalidate hidden>
+          <fieldset>
+            <legend>Apa yang terjadi</legend>
+            <div class="medan">
+              <span class="medan-label" id="lbl-kategori">Jenis persoalan <span class="wajib">*</span></span>
+              <div class="pilihan-kisi" role="radiogroup" aria-labelledby="lbl-kategori" data-kategori></div>
+            </div>
+            <div class="medan">
+              <label for="f-judul">Ringkasan dalam satu kalimat <span class="wajib">*</span></label>
+              <input id="f-judul" name="judul" type="text" maxlength="150" required placeholder="Contoh: Izin renovasi pura di Desa Sukamaju ditahan sejak Maret 2025">
+            </div>
+            <div class="medan">
+              <label for="f-uraian">Kronologi <span class="wajib">*</span></label>
+              <p class="petunjuk" id="p-uraian">Tulis urutan kejadiannya: kapan, di mana, siapa yang terlibat, dan langkah apa yang sudah Anda tempuh.</p>
+              <textarea id="f-uraian" name="uraian" maxlength="8000" required aria-describedby="p-uraian" rows="8"></textarea>
+              <p class="medan-hitung" data-hitung="uraian">0 / 8000</p>
+            </div>
+            <div class="baris-medan">
+              <div class="medan"><label for="f-tanggal">Tanggal kejadian</label><input id="f-tanggal" name="tanggalKejadian" type="date"></div>
+              <div class="medan"><label for="f-pihak">Pihak yang terlibat</label><input id="f-pihak" name="pihak" type="text" maxlength="300" placeholder="Instansi, organisasi, atau perorangan"></div>
+            </div>
+            <label class="centang"><input type="checkbox" name="mendesak"><span><b>Persoalan ini mendesak.</b> Misalnya ada tenggat waktu, ancaman yang masih berlangsung, atau upacara yang terhalang dalam waktu dekat.</span></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Lokasi</legend>
+            <div class="baris-medan">
+              <div class="medan"><label for="f-provinsi">Provinsi <span class="wajib">*</span></label><select id="f-provinsi" name="provinsi" required data-provinsi><option value="">Pilih provinsi</option></select></div>
+              <div class="medan"><label for="f-kota">Kabupaten/kota <span class="wajib">*</span></label><input id="f-kota" name="kota" type="text" maxlength="60" required></div>
+            </div>
+            <div class="medan"><label for="f-alamat">Tempat kejadian</label><input id="f-alamat" name="alamat" type="text" maxlength="200" placeholder="Nama desa, banjar, pura, sekolah, atau kantor"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Bantuan yang Anda harapkan</legend>
+            <div class="pilihan-kisi" data-bantuan></div>
+            <div class="medan"><label for="f-wa">Nomor WhatsApp yang bisa dihubungi</label><input id="f-wa" name="wa" type="tel" inputmode="tel" maxlength="20" placeholder="08xxxxxxxxxx"></div>
+            <label class="centang"><input type="checkbox" name="rahasia" checked><span>Jangan sebut nama saya kepada pihak lain tanpa persetujuan saya.</span></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Bukti pendukung</legend>
+            <p class="keterangan-set">Foto, tangkapan layar, atau surat. Maksimal 4 berkas; foto otomatis diperkecil, PDF maksimal 700 KB.</p>
+            <label class="unggah" data-unggah>
+              <input type="file" accept="image/*,application/pdf" multiple hidden data-berkas>
+              <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-upload"/></svg>
+              <p><b>Pilih berkas</b> atau seret ke sini</p>
+            </label>
+            <ul class="daftar-berkas" data-daftar-berkas></ul>
+          </fieldset>
+
+          <div class="kartu" style="display:grid;gap:16px">
+            <label class="centang"><input type="checkbox" name="setuju" required><span>Keterangan ini benar sepanjang pengetahuan saya. Saya setuju data ini dipakai pengurus untuk menindaklanjuti aduan sesuai <a href="{{BASE}}privasi/" target="_blank">kebijakan privasi</a>.</span></label>
+            <p class="medan-galat" data-galat hidden></p>
+            <div class="aksi-formulir">
+              <button class="tombol tombol-utama" type="submit">Kirim aduan</button>
+              <span class="petunjuk" data-draf style="font-size:.86rem;color:var(--tinta-2)"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <aside class="samping">
+        <div class="pesan pesan-peringatan">
+          <svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-triangle-alert"/></svg>
+          <p><b>Ada ancaman keselamatan saat ini?</b> Hubungi polisi di 110 atau 112 lebih dulu.</p>
+        </div>
+        <div class="kartu">
+          <h3>Siapkan sebelum melapor</h3>
+          <ul>
+            <li>Tanggal dan tempat kejadian.</li>
+            <li>Nama instansi atau orang yang terlibat.</li>
+            <li>Foto, surat, atau tangkapan layar percakapan.</li>
+            <li>Langkah yang sudah Anda tempuh sejauh ini.</li>
+          </ul>
+        </div>
+        <div class="kartu">
+          <h3>Kerahasiaan</h3>
+          <p style="font-size:.93rem;color:var(--tinta-2);margin:0">Aduan hanya bisa dibaca Anda dan pengurus yang menangani. Draf yang belum terkirim tersimpan di perangkat ini saja.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>

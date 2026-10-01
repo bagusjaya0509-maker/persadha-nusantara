@@ -1,0 +1,65 @@
+<!--{"judul":"Aspirasi","deskripsi":"Sampaikan usulan program, kritik, atau gagasan kepada Dewan Pimpinan Pusat Persadha Nusantara.","path":"layanan/aspirasi/","nav":"layanan","skrip":["lapor.js"],"prioritas":"0.7"}-->
+<main id="isi">
+  <header class="kepala-halaman">
+    <div class="wadah">
+      <nav class="remah" aria-label="Remah roti"><a href="{{BASE}}">Beranda</a><span aria-hidden="true">/</span><a href="{{BASE}}layanan/">Layanan</a><span aria-hidden="true">/</span><span>Aspirasi</span></nav>
+      <h1>Sampaikan aspirasi kepada pengurus pusat</h1>
+      <p class="lead">Usulan program untuk daerah Anda, kritik terhadap kinerja pengurus, atau gagasan baru. Setiap aspirasi dibaca dan dicatat pengurus DPP.</p>
+    </div>
+    <div class="kepala-halaman-gerbang" aria-hidden="true"><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg></div>
+  </header>
+  <section class="bagian">
+    <div class="wadah tata-layanan">
+      <div>
+        <div data-pesan-gerbang></div>
+        <div data-hasil hidden></div>
+        <form class="formulir" data-lapor="aspirasi" novalidate hidden>
+          <fieldset>
+            <legend>Aspirasi Anda</legend>
+            <div class="medan">
+              <label for="f-bidang">Bidang yang dituju <span class="wajib">*</span></label>
+              <select id="f-bidang" name="bidang" required data-bidang><option value="">Pilih bidang</option></select>
+            </div>
+            <div class="medan">
+              <label for="f-judul">Judul <span class="wajib">*</span></label>
+              <input id="f-judul" name="judul" type="text" maxlength="150" required placeholder="Contoh: Pelatihan kewirausahaan untuk pemuda Hindu di Lampung Tengah">
+            </div>
+            <div class="medan">
+              <label for="f-uraian">Uraian <span class="wajib">*</span></label>
+              <p class="petunjuk" id="p-uraian">Jelaskan apa yang Anda usulkan, mengapa penting, dan siapa yang akan merasakan manfaatnya.</p>
+              <textarea id="f-uraian" name="uraian" maxlength="5000" required aria-describedby="p-uraian" rows="8"></textarea>
+              <p class="medan-hitung" data-hitung="uraian">0 / 5000</p>
+            </div>
+            <div class="baris-medan">
+              <div class="medan"><label for="f-provinsi">Asal provinsi</label><select id="f-provinsi" name="provinsi" data-provinsi><option value="">Pilih provinsi</option></select></div>
+              <div class="medan"><label for="f-wa">Nomor WhatsApp</label><input id="f-wa" name="wa" type="tel" inputmode="tel" maxlength="20" placeholder="08xxxxxxxxxx"></div>
+            </div>
+          </fieldset>
+          <div class="kartu" style="display:grid;gap:16px">
+            <label class="centang"><input type="checkbox" name="setuju" required><span>Saya setuju aspirasi ini dibaca dan dicatat pengurus sesuai <a href="{{BASE}}privasi/" target="_blank">kebijakan privasi</a>.</span></label>
+            <p class="medan-galat" data-galat hidden></p>
+            <div class="aksi-formulir">
+              <button class="tombol tombol-utama" type="submit">Kirim aspirasi</button>
+              <span class="petunjuk" data-draf style="font-size:.86rem;color:var(--tinta-2)"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <aside class="samping">
+        <div class="kartu">
+          <h3>Aspirasi yang mudah ditindaklanjuti</h3>
+          <ul>
+            <li>Menyebut daerah dan kelompok yang dituju.</li>
+            <li>Memuat perkiraan kebutuhan: tempat, peserta, atau mitra.</li>
+            <li>Menawarkan peran Anda sendiri bila memungkinkan.</li>
+          </ul>
+        </div>
+        <div class="kartu">
+          <h3>Persoalan yang menimpa umat?</h3>
+          <p style="font-size:.93rem;color:var(--tinta-2)">Konflik, diskriminasi, atau sengketa sebaiknya dikirim lewat formulir pengaduan agar ditangani sebagai kasus.</p>
+          <a class="tombol tombol-garis kecil" href="{{BASE}}layanan/aduan/">Buka formulir pengaduan</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>

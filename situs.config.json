@@ -1,0 +1,34 @@
+{
+  "situs": {
+    "nama": "Persadha Nusantara",
+    "namaLengkap": "Pergerakan Sanathana Dharma Nusantara",
+    "namaBadanHukum": "Perkumpulan Pergerakan Sanatana Dharma Nusantara",
+    "url": "https://bagusjaya0509-maker.github.io/persadha-nusantara/",
+    "deskripsi": "Situs resmi Dewan Pimpinan Pusat Persadha Nusantara: kabar kegiatan, visi dan misi, program kerja, serta layanan pengaduan dan aspirasi umat Hindu Indonesia."
+  },
+  "kontak": {
+    "alamat": "Jl. Sawah Lunto No. 50, Pasar Manggis, Setiabudi, Jakarta Selatan 12970",
+    "alamatPendek": "Jl. Sawah Lunto No. 50, Jakarta Selatan",
+    "telepon": "0821-1304-3997",
+    "whatsapp": "6282113043997",
+    "email": "dpppersadhanusantara@gmail.com",
+    "peta": "https://www.google.com/maps/search/?api=1&query=Jl.+Sawah+Lunto+No.+50+Pasar+Manggis+Setiabudi+Jakarta+Selatan"
+  },
+  "sosial": {
+    "instagram": "https://www.instagram.com/persadha.nusantara/",
+    "facebook": "",
+    "youtube": ""
+  },
+  "firebase": {
+    "apiKey": "",
+    "authDomain": "",
+    "projectId": "",
+    "storageBucket": "",
+    "messagingSenderId": "",
+    "appId": ""
+  },
+  "adminUtama": ["dpppersadhanusantara@gmail.com"],
+  "notifikasi": {
+    "emailAduanBaru": "dpppersadhanusantara@gmail.com"
+  }
+}

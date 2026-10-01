@@ -1,0 +1,69 @@
+<!--{"judul":"Keanggotaan","deskripsi":"Daftar sebagai anggota Persadha Nusantara, pilih bidang kerja yang ingin diikuti, dan terima kartu anggota digital setelah diverifikasi.","path":"layanan/anggota/","nav":"layanan","skrip":["anggota.js"],"prioritas":"0.8"}-->
+<main id="isi">
+  <header class="kepala-halaman">
+    <div class="wadah">
+      <nav class="remah" aria-label="Remah roti"><a href="{{BASE}}">Beranda</a><span aria-hidden="true">/</span><a href="{{BASE}}layanan/">Layanan</a><span aria-hidden="true">/</span><span>Keanggotaan</span></nav>
+      <h1>Bergabung dengan Persadha Nusantara</h1>
+      <p class="lead">Anggota adalah umat Hindu yang mendaftarkan diri dan terdaftar pada perkumpulan. Setelah pengurus memverifikasi data Anda, nomor anggota dan kartu digital terbit di akun.</p>
+    </div>
+    <div class="kepala-halaman-gerbang" aria-hidden="true"><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg><svg viewBox="0 0 320 900"><use href="{{BASE}}aset/img/ikon.svg#i-gerbang"/></svg></div>
+  </header>
+  <section class="bagian">
+    <div class="wadah tata-layanan">
+      <div>
+        <div data-pesan-gerbang></div>
+        <div data-status-anggota hidden></div>
+        <form class="formulir" data-form-anggota novalidate hidden>
+          <fieldset>
+            <legend>Data diri</legend>
+            <div class="medan"><label for="a-nama">Nama lengkap sesuai KTP <span class="wajib">*</span></label><input id="a-nama" name="nama" type="text" maxlength="80" required autocomplete="name"></div>
+            <div class="baris-medan">
+              <div class="medan"><span class="medan-label" id="lbl-jk">Jenis kelamin <span class="wajib">*</span></span>
+                <div class="pilihan-kisi" role="radiogroup" aria-labelledby="lbl-jk" style="grid-template-columns:1fr 1fr">
+                  <label class="pilihan"><input type="radio" name="jenisKelamin" value="L" required><span><b>Laki-laki</b></span></label>
+                  <label class="pilihan"><input type="radio" name="jenisKelamin" value="P"><span><b>Perempuan</b></span></label>
+                </div>
+              </div>
+              <div class="medan"><label for="a-lahir">Tanggal lahir <span class="wajib">*</span></label><input id="a-lahir" name="tanggalLahir" type="date" required></div>
+            </div>
+            <div class="baris-medan">
+              <div class="medan"><label for="a-wa">Nomor WhatsApp <span class="wajib">*</span></label><input id="a-wa" name="wa" type="tel" inputmode="tel" maxlength="20" required placeholder="08xxxxxxxxxx"></div>
+              <div class="medan"><label for="a-kerja">Pekerjaan</label><input id="a-kerja" name="pekerjaan" type="text" maxlength="80"></div>
+            </div>
+            <div class="baris-medan">
+              <div class="medan"><label for="a-provinsi">Provinsi domisili <span class="wajib">*</span></label><select id="a-provinsi" name="provinsi" required data-provinsi><option value="">Pilih provinsi</option></select></div>
+              <div class="medan"><label for="a-kota">Kabupaten/kota <span class="wajib">*</span></label><input id="a-kota" name="kota" type="text" maxlength="60" required></div>
+            </div>
+            <div class="medan"><label for="a-alamat">Alamat</label><input id="a-alamat" name="alamat" type="text" maxlength="200"></div>
+          </fieldset>
+          <fieldset>
+            <legend>Bidang yang ingin Anda ikuti</legend>
+            <p class="keterangan-set">Pilih satu atau lebih. Pengurus bidang akan menghubungi Anda ketika ada kegiatan.</p>
+            <div class="pilihan-kisi" data-bidang-minat></div>
+            <div class="medan"><label for="a-alasan">Apa yang ingin Anda kerjakan bersama Persadha?</label><textarea id="a-alasan" name="alasan" maxlength="1500" rows="4"></textarea></div>
+          </fieldset>
+          <div class="kartu" style="display:grid;gap:16px">
+            <label class="centang"><input type="checkbox" name="pernyataan" required><span>Saya umat Hindu dan bersedia mematuhi Anggaran Dasar serta peraturan organisasi Persadha Nusantara.</span></label>
+            <label class="centang"><input type="checkbox" name="setuju" required><span>Saya setuju data ini disimpan untuk keperluan keanggotaan sesuai <a href="{{BASE}}privasi/" target="_blank">kebijakan privasi</a>.</span></label>
+            <p class="medan-galat" data-galat hidden></p>
+            <div class="aksi-formulir"><button class="tombol tombol-utama" type="submit">Kirim pendaftaran</button></div>
+          </div>
+        </form>
+      </div>
+      <aside class="samping">
+        <div class="kartu">
+          <h3>Setelah mendaftar</h3>
+          <ul>
+            <li>Pengurus memeriksa data Anda.</li>
+            <li>Bila disetujui, nomor anggota terbit dan kartu anggota digital muncul di akun.</li>
+            <li>Pengurus bidang menghubungi Anda saat ada kegiatan di daerah Anda.</li>
+          </ul>
+        </div>
+        <div class="kartu">
+          <h3>Tanpa biaya pendaftaran</h3>
+          <p style="font-size:.93rem;color:var(--tinta-2);margin:0">Pendaftaran lewat situs tidak dipungut biaya. Ketentuan iuran anggota, bila ada, diumumkan resmi oleh pengurus.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>

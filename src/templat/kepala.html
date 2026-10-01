@@ -1,0 +1,44 @@
+<div class="bilah-atas">
+  <div class="wadah bilah-atas-isi">
+    <p class="bilah-atas-alamat"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-map-pin"/></svg>Sekretariat DPP · {{kontak.alamatPendek}}</p>
+    <div class="bilah-atas-kanan">
+      <a href="https://wa.me/{{kontak.whatsapp}}" target="_blank" rel="noopener"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-whatsapp"/></svg>{{kontak.telepon}}</a>
+      <a class="sembunyi-hp" href="mailto:{{kontak.email}}"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-mail"/></svg>{{kontak.email}}</a>
+      <span class="bilah-atas-sosial">{{tautan_sosial}}</span>
+    </div>
+  </div>
+</div>
+<header class="kepala" data-kepala>
+  <div class="wadah kepala-isi">
+    <a class="merek" href="{{BASE}}">
+      <img src="{{BASE}}aset/img/lambang.svg" alt="" width="40" height="54">
+      <span class="merek-teks"><span class="merek-nama">Persadha Nusantara</span><span class="merek-sub">Pergerakan Sanathana Dharma Nusantara</span></span>
+    </a>
+    <nav class="nav" id="nav-utama" aria-label="Menu utama">
+      <ul class="nav-daftar">
+        <li><a href="{{BASE}}kabar/" data-nav="kabar">Kabar</a></li>
+        <li><a href="{{BASE}}tentang/" data-nav="tentang">Tentang</a></li>
+        <li><a href="{{BASE}}program/" data-nav="program">Program</a></li>
+        <li class="nav-turun">
+          <a href="{{BASE}}layanan/" data-nav="layanan">Layanan</a>
+          <button class="nav-turun-tombol" type="button" aria-expanded="false" aria-controls="sub-layanan" aria-label="Buka submenu layanan"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-chevron-down"/></svg></button>
+          <ul class="nav-sub" id="sub-layanan">
+            <li><a href="{{BASE}}layanan/aduan/"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-scale"/></svg><span><b>Pengaduan</b><small>Konflik, diskriminasi, sengketa</small></span></a></li>
+            <li><a href="{{BASE}}layanan/aspirasi/"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-megaphone"/></svg><span><b>Aspirasi</b><small>Usulan dan kritik untuk pengurus</small></span></a></li>
+            <li><a href="{{BASE}}layanan/anggota/"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-id-card"/></svg><span><b>Keanggotaan</b><small>Daftar sebagai anggota</small></span></a></li>
+          </ul>
+        </li>
+        <li><a href="{{BASE}}kontak/" data-nav="kontak">Kontak</a></li>
+      </ul>
+      <div class="nav-seluler-aksi">
+        <a class="tombol tombol-utama lebar" href="{{BASE}}layanan/aduan/">Laporkan masalah</a>
+        <a class="tombol tombol-garis lebar" href="{{BASE}}masuk/" data-tautan-akun>Masuk atau daftar</a>
+      </div>
+    </nav>
+    <div class="kepala-aksi">
+      <a class="tautan-akun" href="{{BASE}}masuk/" data-tautan-akun><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-user-round"/></svg><span>Masuk</span></a>
+      <a class="tombol tombol-utama sembunyi-hp" href="{{BASE}}layanan/aduan/">Laporkan masalah</a>
+      <button class="tombol-menu" type="button" aria-expanded="false" aria-controls="nav-utama" aria-label="Buka menu"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
