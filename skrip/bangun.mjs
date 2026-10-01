@@ -228,6 +228,7 @@ let jumlahKabar = 0;
   try {
     const semua = [];
     let ambilIsi;
+    let pakaiAwal = false;
     if (pakaiFirebase) {
       let setelah = null;
       for (;;) {
@@ -237,8 +238,10 @@ let jumlahKabar = 0;
         setelah = satu[satu.length - 1].terbitPada;
       }
       ambilIsi = async (slug) => (await ambilDokumen({ projectId: fb.projectId, apiKey: fb.apiKey, jalur: `kabarIsi/${slug}` })) || {};
-    } else {
-      // Firebase belum diisi: terbitkan kabar awal dari dokumen legal.
+    }
+    if (!semua.length) {
+      // Firebase belum diisi atau belum ada kabar terbit: pakai kabar awal dari dokumen legal.
+      pakaiAwal = true;
       const { KABAR_AWAL } = await import(pathToFileURL(path.join(AKAR, 'aset/js/kabar-awal.js')));
       for (const { delta, ...k } of KABAR_AWAL) semua.push({ id: k.slug, ...k });
       ambilIsi = async (slug) => ({ delta: KABAR_AWAL.find((k) => k.slug === slug).delta });
@@ -310,7 +313,7 @@ let jumlahKabar = 0;
       peta.push({ loc: urlHalaman, prioritas: '0.7', lastmod: (kabar.diubah || kabar.terbitPada) && new Date(kabar.diubah || kabar.terbitPada).toISOString().slice(0, 10) });
       jumlahKabar++;
     }
-    console.log(`✓ ${jumlahKabar} kabar statis dibuat dari ${pakaiFirebase ? 'Firestore' : 'kabar awal (Firebase belum diisi)'}`);
+    console.log(`✓ ${jumlahKabar} kabar statis dibuat dari ${pakaiFirebase && !pakaiAwal ? 'Firestore' : 'kabar awal'}`);
   } catch (e) {
     // Build tetap jalan: kabar masih terbaca lewat 404.html (dirender di peramban).
     console.warn(`! Gagal menarik kabar dari Firestore: ${e.message}`);

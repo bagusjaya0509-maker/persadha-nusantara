@@ -10,6 +10,17 @@ const awal = () => KABAR_AWAL.map(({ delta, ...k }) => ({ id: k.slug, ...k })).s
 
 const fb = () => ({ projectId: KONFIG.firebase.projectId, apiKey: KONFIG.firebase.apiKey });
 
+// Selama koleksi kabar di Firestore masih kosong (pengurus belum menerbitkan
+// apa pun), tampilkan kabar awal. Begitu ada satu kabar terbit, Firestore menang.
+let janjiKosong;
+const firestoreKosong = () => (janjiKosong ??= kueriKabar({ ...fb(), batas: 1 }).then((d) => d.length === 0).catch(() => false));
+function saringAwal({ batas, setelah, kategori }) {
+  let d = awal();
+  if (kategori) d = d.filter((k) => k.kategori === kategori);
+  if (setelah) d = d.filter((k) => k.terbitPada < setelah);
+  return d.slice(0, batas);
+}
+
 async function daftarDemo({ batas, setelah, kategori }) {
   const { bacaDemo, tunda } = await import('./demo.js');
   await tunda(120);
@@ -22,14 +33,11 @@ async function daftarDemo({ batas, setelah, kategori }) {
 /** Daftar kabar terbit, terbaru dulu. */
 export async function daftarKabar({ batas = 12, setelah = null, kategori = null } = {}) {
   if (MODE === 'demo') return daftarDemo({ batas, setelah, kategori });
-  if (MODE !== 'firebase') {
-    let d = awal();
-    if (kategori) d = d.filter((k) => k.kategori === kategori);
-    if (setelah) d = d.filter((k) => k.terbitPada < setelah);
-    return d.slice(0, batas);
-  }
+  if (MODE !== 'firebase') return saringAwal({ batas, setelah, kategori });
   try {
-    return await kueriKabar({ ...fb(), batas, setelah, kategori });
+    const hasil = await kueriKabar({ ...fb(), batas, setelah, kategori });
+    if (!hasil.length && (await firestoreKosong())) return saringAwal({ batas, setelah, kategori });
+    return hasil;
   } catch (e) {
     // Filter kategori butuh indeks gabungan. Sebelum indeksnya dibuat,
     // ambil kabar terbaru lalu saring di peramban.
@@ -59,5 +67,8 @@ export async function ambilKabar(slug) {
     ambilDokumen({ ...fb(), jalur: `kabar/${slug}` }),
     ambilDokumen({ ...fb(), jalur: `kabarIsi/${slug}` }),
   ]);
-  return kabar ? { kabar, isi: isi || {} } : null;
+  if (kabar) return { kabar, isi: isi || {} };
+  const k = KABAR_AWAL.find((x) => x.slug === slug);
+  if (k && (await firestoreKosong())) return { kabar: awal().find((x) => x.id === slug), isi: { delta: k.delta } };
+  return null;
 }

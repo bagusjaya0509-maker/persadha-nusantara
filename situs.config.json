@@ -20,14 +20,16 @@
     "youtube": ""
   },
   "firebase": {
-    "apiKey": "",
-    "authDomain": "",
-    "projectId": "",
-    "storageBucket": "",
-    "messagingSenderId": "",
-    "appId": ""
+    "apiKey": "AIzaSyCU8YpFUZDjEAdXFYcFxs2fxt2CSQ9-4uU",
+    "authDomain": "persadha-nusantara.firebaseapp.com",
+    "projectId": "persadha-nusantara",
+    "storageBucket": "persadha-nusantara.firebasestorage.app",
+    "messagingSenderId": "620405805866",
+    "appId": "1:620405805866:web:868f609d53f30903cf8453"
   },
-  "adminUtama": ["dpppersadhanusantara@gmail.com"],
+  "adminUtama": [
+    "dpppersadhanusantara@gmail.com"
+  ],
   "notifikasi": {
     "emailAduanBaru": "dpppersadhanusantara@gmail.com"
   }
