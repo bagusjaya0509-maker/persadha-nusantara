@@ -95,10 +95,23 @@ const templat = {
   kaki: await baca('src/templat/kaki.html'),
 };
 
-const tautanSosial = Object.entries(konfig.sosial)
+// Nama akun ditampilkan di samping ikon: @persadhantb lebih mudah dicari daripada ikon saja.
+const NAMA_SOSIAL = { instagram: 'Instagram', facebook: 'Facebook', youtube: 'YouTube' };
+function akunSosial(nama, url) {
+  const bagian = new URL(url).pathname.split('/').filter(Boolean);
+  const akun = (bagian[bagian.length - 1] || '').replace(/^@/, '');
+  if (!akun) return NAMA_SOSIAL[nama] || nama;
+  return nama === 'facebook' ? akun : `@${akun}`;
+}
+const daftarSosial = Object.entries(konfig.sosial)
   .filter(([, url]) => url)
-  .map(([nama, url]) => `<a href="${esc(url)}" target="_blank" rel="noopener" aria-label="${nama}"><svg class="ikon"><use href="${BASE}aset/img/ikon.svg#i-${nama}"/></svg></a>`)
+  .map(([nama, url]) => ({ nama, url, akun: akunSosial(nama, url) }));
+const tautanSosial = daftarSosial
+  .map(({ nama, url, akun }) => `<a href="${esc(url)}" target="_blank" rel="noopener" aria-label="${NAMA_SOSIAL[nama] || nama} ${esc(akun)}"><svg class="ikon" aria-hidden="true"><use href="${BASE}aset/img/ikon.svg#i-${nama}"/></svg><span>${esc(akun)}</span></a>`)
   .join('');
+const kartuSosial = daftarSosial
+  .map(({ nama, url, akun }) => `<div class="kartu kontak-butir"><svg class="ikon" aria-hidden="true"><use href="${BASE}aset/img/ikon.svg#i-${nama}"/></svg><div><h2>${NAMA_SOSIAL[nama] || nama}</h2><p style="font-size:1.1rem;font-weight:700;margin-bottom:4px">${esc(akun)}</p><p style="color:var(--tinta-2)">Kabar kegiatan DPD NTB juga dibagikan di sini.</p><a class="tombol tombol-garis kecil" href="${esc(url)}" target="_blank" rel="noopener">Buka ${NAMA_SOSIAL[nama] || nama}</a></div></div>`)
+  .join('\n        ');
 
 // Potongan kontak: hanya tampil bila datanya diisi di situs.config.json.
 const kt = konfig.kontak || {};
@@ -121,10 +134,12 @@ const kontakHalaman = kontakAda
         ${kt.alamat ? `<div class="kartu kontak-butir">${ikonH('map-pin')}<div><h2>Alamat sekretariat</h2><address>${esc(kt.alamat)}</address>${kt.peta ? `<a class="tombol-teks" href="${esc(kt.peta)}" target="_blank" rel="noopener">Buka di Google Maps ${ikonH('external-link')}</a>` : ''}</div></div>` : ''}
         ${kt.whatsapp ? `<div class="kartu kontak-butir">${ikonH('whatsapp')}<div><h2>WhatsApp dan telepon</h2><p class="kode" style="font-size:1.1rem">${esc(kt.telepon || kt.whatsapp)}</p><a class="tombol tombol-utama kecil" href="https://wa.me/${esc(kt.whatsapp)}" target="_blank" rel="noopener">Kirim pesan WhatsApp</a></div></div>` : ''}
         ${kt.email ? `<div class="kartu kontak-butir">${ikonH('mail')}<div><h2>Email</h2><p><a href="mailto:${esc(kt.email)}">${esc(kt.email)}</a></p></div></div>` : ''}
+        ${kartuSosial}
       </div>`
   : `<div class="kontak-daftar">
         <div class="kartu kontak-butir">${ikonH('map-pin')}<div><h2>Sekretariat DPD NTB</h2><p>Alamat dan nomor sekretariat DPD NTB sedang dilengkapi. Aduan, aspirasi, dan pendaftaran anggota sudah bisa dikirim lewat <a href="${BASE}layanan/">layanan daring</a> dan dibaca langsung oleh pengurus.</p></div></div>
         ${induk.whatsapp ? `<div class="kartu kontak-butir">${ikonH('whatsapp')}<div><h2>Keperluan mendesak</h2><p>Hubungi sekretariat DPP Persadha Nusantara di Jakarta. Pesan Anda diteruskan ke pengurus DPD NTB.</p><p class="kode" style="font-size:1.05rem">${esc(induk.telepon)}</p><a class="tombol tombol-utama kecil" href="https://wa.me/${esc(induk.whatsapp)}" target="_blank" rel="noopener">WhatsApp sekretariat DPP</a></div></div>` : ''}
+        ${kartuSosial}
       </div>`;
 
 const dataUmum = {

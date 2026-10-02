@@ -114,7 +114,8 @@ button { cursor: pointer; }
 .bilah-atas a:hover { color: var(--prada-muda); }
 .bilah-atas .ikon { color: var(--prada); }
 .bilah-atas-kanan { display: flex; align-items: center; gap: 20px; }
-.bilah-atas-sosial { display: inline-flex; gap: 12px; }
+.bilah-atas-sosial { display: inline-flex; gap: 16px; }
+.bilah-atas-sosial a { font-weight: 600; }
 
 .kepala { position: sticky; top: 0; z-index: 40; background: rgb(255 255 255 / 0.96); backdrop-filter: saturate(1.4) blur(8px); border-bottom: 1px solid var(--garis); transition: box-shadow 0.2s; }
 .kepala.tergulir { box-shadow: 0 6px 24px -14px rgb(29 24 23 / 0.35); }
@@ -614,8 +615,9 @@ a:hover .sampul img { transform: scale(1.03); }
 .kaki address { font-style: normal; margin-bottom: 14px; line-height: 1.6; }
 .kaki-kontak a { display: inline-flex; gap: 8px; align-items: center; word-break: break-all; }
 .kaki-kontak .ikon { color: var(--prada); }
-.kaki-sosial { display: flex; gap: 14px; margin-top: 16px; }
-.kaki-sosial .ikon { width: 22px; height: 22px; }
+.kaki-sosial { display: grid; gap: 10px; margin-top: 16px; justify-items: start; }
+.kaki-sosial a { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
+.kaki-sosial .ikon { width: 20px; height: 20px; color: var(--prada); }
 .kaki-bawah { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 20px; border-top: 1px solid rgb(255 255 255 / 0.1); font-size: 0.85rem; color: #918679; }
 .kaki-bawah p { margin: 0; }
 
