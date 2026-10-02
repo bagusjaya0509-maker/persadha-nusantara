@@ -7,12 +7,15 @@ const UKURAN = 12;
 const kisi = $('[data-kisi]');
 const tLagi = $('[data-lagi]');
 const cari = $('[data-cari]');
-let kategori = KATEGORI_KABAR.includes(param('kategori')) ? param('kategori') : null;
+let kategori = (param('kategori') || '').trim().slice(0, 40) || null;
 let semua = [];
 let habis = false;
+// Kategori bawaan + kategori buatan pengurus yang ditemukan di kabar terbit.
+const kategoriTerlihat = new Set(KATEGORI_KABAR);
+if (kategori) kategoriTerlihat.add(kategori);
 
 function chip() {
-  const pilihan = [null, ...KATEGORI_KABAR];
+  const pilihan = [null, ...kategoriTerlihat];
   $('[data-chip]').innerHTML = pilihan
     .map((k) => `<a class="chip" href="${BASE}kabar/${k ? `?kategori=${encodeURIComponent(k)}` : ''}" data-kat="${esc(k || '')}" aria-current="${k === kategori}">${esc(k || 'Semua')}</a>`)
     .join('');
@@ -36,6 +39,9 @@ async function muat(lanjut = false) {
     const baru = await daftarKabar({ batas: UKURAN, setelah, kategori });
     semua = lanjut ? semua.concat(baru) : baru;
     habis = baru.length < UKURAN;
+    const jumlahAwal = kategoriTerlihat.size;
+    baru.forEach((k) => k.kategori && kategoriTerlihat.add(k.kategori));
+    if (kategoriTerlihat.size !== jumlahAwal) chip();
     tampil();
   } catch (e) {
     console.error(e);

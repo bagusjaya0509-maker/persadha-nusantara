@@ -111,7 +111,7 @@ async function rute() {
 
 const PIL_TERBIT = '<span class="status" data-status="terbit">Terbit</span>';
 const pilAnggota = (st) => `<span class="status" data-status="${esc(st)}">${esc(STATUS_ANGGOTA[st] || st)}</span>`;
-const setJudul = (t) => { judul.textContent = t; document.title = `${t} — Panel Pengurus Persadha Nusantara`; };
+const setJudul = (t) => { judul.textContent = t; document.title = `${t} — Panel Pengurus Persadha NTB`; };
 
 async function ambilLaporan(paksa = false) {
   if (!cache.laporan || paksa) cache.laporan = await L.semuaLaporan();
@@ -285,8 +285,14 @@ const keLokal = (ms) => {
   return d.toISOString().slice(0, 16);
 };
 
+// Kategori kabar: lima bawaan + kategori buatan pengurus yang pernah dipakai.
+const rapikanKategori = (t) => {
+  // Huruf pertama tiap kata kapital (seperti "Dharma Wacana"); sisanya tetap, jadi "HUT RI" tidak berubah.
+  return String(t || '').replace(/\s+/g, ' ').trim().slice(0, 40).replace(/(^|\s)(\S)/g, (_, a, b) => a + b.toUpperCase());
+};
+
 async function vEditor(slug) {
-  const lama = slug ? await L.ambilKabarEdit(slug) : null;
+  const [lama, semuaKabar] = await Promise.all([slug ? L.ambilKabarEdit(slug) : null, L.semuaKabarAdmin().catch(() => [])]);
   if (slug && !lama) { isi.innerHTML = `<div class="kosong"><h3>Kabar tidak ditemukan</h3><p><a href="#kabar">Kembali ke daftar kabar</a></p></div>`; return; }
   setJudul(lama ? 'Sunting kabar' : 'Tulis kabar');
   const k = {
@@ -294,6 +300,7 @@ async function vEditor(slug) {
     penulis: lama?.penulis || saya.nama, unggulan: Boolean(lama?.unggulan), sampul: lama?.sampul || '', sampulKecil: lama?.sampulKecil || '',
     keteranganSampul: lama?.keteranganSampul || '', delta: lama?.delta || '[]', terbitPada: lama?.terbitPada || Date.now(), terbit: Boolean(lama?.terbit),
   };
+  const daftarKategori = [...new Set([...KATEGORI_KABAR, ...semuaKabar.map((x) => x.kategori).filter(Boolean), k.kategori])];
   let slugTerkunci = Boolean(lama);
   aksi.innerHTML = `<a class="tombol tombol-garis kecil" href="#kabar">${ikon('arrow-left')}Daftar kabar</a>`;
   isi.innerHTML = `
@@ -317,7 +324,9 @@ async function vEditor(slug) {
         </section>
         <section class="adm-kartu medan-kecil">
           <h2>Pengaturan</h2>
-          <div class="medan"><label for="e-kategori">Kategori</label><select id="e-kategori" data-e="kategori">${KATEGORI_KABAR.map((x) => `<option ${x === k.kategori ? 'selected' : ''}>${x}</option>`).join('')}</select></div>
+          <div class="medan"><label for="e-kategori">Kategori</label><select id="e-kategori" data-e="kategori">${daftarKategori.map((x) => `<option value="${esc(x)}" ${x === k.kategori ? 'selected' : ''}>${esc(x)}</option>`).join('')}<option value="__baru__">+ Kategori baru…</option></select>
+            <input data-e="kategoriBaru" type="text" maxlength="40" placeholder="Contoh: Bakti Sosial" aria-label="Nama kategori baru" hidden>
+            <p class="petunjuk" data-petunjuk-kategori hidden>Kategori baru otomatis muncul sebagai pilihan saring di halaman Kabar.</p></div>
           <div class="medan"><label for="e-tanggal">Tanggal terbit</label><input id="e-tanggal" data-e="terbitPada" type="datetime-local" value="${keLokal(k.terbitPada)}"><p class="petunjuk">Bisa diisi tanggal kegiatan berlangsung.</p></div>
           <div class="medan"><label for="e-penulis">Penulis</label><input id="e-penulis" data-e="penulis" type="text" maxlength="80" value="${esc(k.penulis)}"></div>
           <label class="centang"><input type="checkbox" data-e="unggulan" ${k.unggulan ? 'checked' : ''}><span>Jadikan kabar utama di beranda</span></label>
@@ -379,7 +388,7 @@ async function vEditor(slug) {
     ...k,
     judul: E('judul').value.trim(),
     ringkasan: E('ringkasan').value.trim(),
-    kategori: E('kategori').value,
+    kategori: E('kategori').value === '__baru__' ? rapikanKategori(E('kategoriBaru').value) : E('kategori').value,
     penulis: E('penulis').value.trim(),
     unggulan: E('unggulan').checked,
     keteranganSampul: E('keteranganSampul').value.trim(),
@@ -397,6 +406,13 @@ async function vEditor(slug) {
   const tandaiUbah = () => { adaPerubahan = true; $('[data-info-simpan]').textContent = 'Ada perubahan yang belum disimpan'; ukurIsi(); };
   q.on('text-change', tandaiUbah);
   $$('[data-e]').forEach((el) => el.addEventListener('input', tandaiUbah));
+  E('kategori').addEventListener('change', () => {
+    const baru = E('kategori').value === '__baru__';
+    E('kategoriBaru').hidden = !baru;
+    $('[data-petunjuk-kategori]').hidden = !baru;
+    if (baru) E('kategoriBaru').focus();
+    tandaiUbah();
+  });
   const tumbuh = () => { E('judul').style.height = 'auto'; E('judul').style.height = `${E('judul').scrollHeight}px`; };
   E('judul').addEventListener('input', () => { tumbuh(); if (!slugTerkunci) E('slug').value = buatSlug(E('judul').value); });
   E('judul').addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
@@ -430,6 +446,10 @@ async function vEditor(slug) {
   async function siapkan(untukTerbit) {
     const d = kumpulkan();
     if (d.judul.length < 8) throw Object.assign(new Error('Judul minimal 8 karakter.'), { pesan: 'Judul minimal 8 karakter.' });
+    if (!d.kategori) {
+      E('kategoriBaru').focus();
+      throw new Error('Tulis nama kategori baru, atau pilih kategori dari daftar.');
+    }
     if (untukTerbit && deltaKeTeks(d.delta).trim().length < 40) throw Object.assign(new Error('Isi kabar masih terlalu pendek untuk diterbitkan.'), {});
     d.delta = JSON.stringify(await rampingkanGambar(q.getContents().ops));
     if (!d.ringkasan) {
