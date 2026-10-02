@@ -2,7 +2,7 @@
 import { $, $$, BASE, esc, ikon, roti, denganMemuat, pesanGalat, lokalBaca, lokalSimpan } from './inti.js';
 import { L } from './layanan.js';
 import { jagaAkun } from './gerbang.js';
-import { PROVINSI, KATEGORI_ADUAN, BANTUAN, BIDANG } from './rujukan.js';
+import { PROVINSI, KATEGORI_ADUAN, BANTUAN, BIDANG, pasangWilayahNtb } from './rujukan.js';
 import { kompres, bacaDataUrl, ukuranDataUrl, formatUkuran } from './gambar.js';
 
 const f = $('[data-lapor]');
@@ -13,6 +13,7 @@ let berkas = [];
 
 // ---------- isi pilihan ----------
 $$('[data-provinsi]', f).forEach((s) => s.insertAdjacentHTML('beforeend', PROVINSI.map((p) => `<option>${p}</option>`).join('')));
+pasangWilayahNtb();
 $('[data-kategori]', f)?.insertAdjacentHTML(
   'beforeend',
   KATEGORI_ADUAN.map((k) => `<label class="pilihan"><input type="radio" name="kategori" value="${k.kunci}" required><span><b>${esc(k.nama)}</b><small>${esc(k.contoh)}</small></span></label>`).join(''),

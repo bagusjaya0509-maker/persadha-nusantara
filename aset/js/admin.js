@@ -36,7 +36,7 @@ if (MODE === 'mati') {
   pantauSesi((p) => {
     if (!p) {
       const lanjut = encodeURIComponent(location.pathname + location.hash);
-      return tampilGerbang(`${ikon('lock', 'ikon ikon-besar')}<h2>Masuk sebagai pengurus</h2><p>Panel ini hanya untuk pengurus DPP yang sudah diberi akses.</p><div class="aksi-formulir"><a class="tombol tombol-utama" href="${BASE}masuk/?lanjut=${lanjut}">Masuk</a><a class="tombol tombol-garis" href="${BASE}">Ke beranda</a></div>`);
+      return tampilGerbang(`${ikon('lock', 'ikon ikon-besar')}<h2>Masuk sebagai pengurus</h2><p>Panel ini hanya untuk pengurus DPD NTB yang sudah diberi akses.</p><div class="aksi-formulir"><a class="tombol tombol-utama" href="${BASE}masuk/?lanjut=${lanjut}">Masuk</a><a class="tombol tombol-garis" href="${BASE}">Ke beranda</a></div>`);
     }
     if (!p.admin) {
       return tampilGerbang(`${ikon('shield', 'ikon ikon-besar')}<h2>Akun ini belum memiliki akses pengurus</h2><p>Anda masuk sebagai <b>${esc(p.email)}</b>. Minta pengurus yang sudah memiliki akses untuk menambahkan email ini di menu <i>Pengguna &amp; pengurus</i>.</p>${

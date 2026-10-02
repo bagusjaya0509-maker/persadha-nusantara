@@ -29,12 +29,12 @@ export const SPRITE = `${BASE}aset/img/ikon.svg?v=${KONFIG.versi || ''}`;
 export const ikon = (nama, kelas = 'ikon') => `<svg class="${kelas}" aria-hidden="true"><use href="${SPRITE}#i-${nama}"/></svg>`;
 export const param = (k) => new URLSearchParams(location.search).get(k);
 
-const fTgl = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
-const fTglPendek = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' });
-const fJam = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
+const fTgl = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' });
+const fTglPendek = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Makassar' });
+const fJam = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Makassar' });
 export const tanggal = (ms) => (ms ? fTgl.format(new Date(ms)) : '');
 export const tanggalPendek = (ms) => (ms ? fTglPendek.format(new Date(ms)) : '');
-export const tanggalJam = (ms) => (ms ? `${fTglPendek.format(new Date(ms))}, ${fJam.format(new Date(ms))} WIB` : '');
+export const tanggalJam = (ms) => (ms ? `${fTglPendek.format(new Date(ms))}, ${fJam.format(new Date(ms))} WITA` : '');
 export function waktuLalu(ms) {
   if (!ms) return '';
   const d = (Date.now() - ms) / 1000;

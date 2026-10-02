@@ -408,7 +408,7 @@ function kabariPengurus(lap) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
-      _subject: `[Persadha Nusantara] ${jenis} baru ${lap.nomor}${lap.mendesak ? ' — MENDESAK' : ''}`,
+      _subject: `[Persadha NTB] ${jenis} baru ${lap.nomor}${lap.mendesak ? ' — MENDESAK' : ''}`,
       _template: 'table',
       _captcha: 'false',
       Nomor: lap.nomor,
@@ -497,9 +497,9 @@ const demoMesin = {
       if (!s.akun[e]) {
         const uid = d.idAcak(16);
         s.akun[e] = { uid, sandi: d.idAcak(12) };
-        s.pengguna[uid] = { nama: 'Sekretariat DPP', email: e, wa: KONFIG.kontak?.telepon || '', provinsi: 'DKI Jakarta', kota: 'Jakarta Selatan', dibuat: Date.now(), diubah: Date.now() };
+        s.pengguna[uid] = { nama: 'Sekretariat DPD NTB', email: e, wa: '081234567890', provinsi: 'Nusa Tenggara Barat', kota: 'Kota Mataram', dibuat: Date.now(), diubah: Date.now() };
       }
-      s.admin[s.akun[e].uid] = { email: e, nama: 'Sekretariat DPP', ditambahkan: Date.now() };
+      s.admin[s.akun[e].uid] = { email: e, nama: 'Sekretariat DPD NTB', ditambahkan: Date.now() };
       s.sesi = s.akun[e].uid;
     });
     segarkanSesi();
@@ -741,7 +741,7 @@ function gabungKabar(terbit, draf) {
   return [...peta.values()].sort((a, b) => (b.diubah || 0) - (a.diubah || 0));
 }
 export function nomorAnggota(urut) {
-  return `PN-${new Date().getFullYear()}-${String(urut).padStart(5, '0')}`;
+  return `PN-NTB-${new Date().getFullYear()}-${String(urut).padStart(5, '0')}`;
 }
 
 const MATI = new Proxy({}, { get: () => async () => { throw galat('LAYANAN_MATI'); } });

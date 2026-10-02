@@ -1,12 +1,13 @@
 import { $, $$, BASE, esc, ikon, roti, denganMemuat, pesanGalat, tanggal } from './inti.js';
 import { L } from './layanan.js';
 import { jagaAkun } from './gerbang.js';
-import { PROVINSI, BIDANG, STATUS_ANGGOTA } from './rujukan.js';
+import { PROVINSI, BIDANG, STATUS_ANGGOTA, pasangWilayahNtb } from './rujukan.js';
 import { kartuAnggota } from './kartu-anggota.js';
 
 const f = $('[data-form-anggota]');
 const status = $('[data-status-anggota]');
 $('[data-provinsi]', f).insertAdjacentHTML('beforeend', PROVINSI.map((p) => `<option>${p}</option>`).join(''));
+pasangWilayahNtb();
 $('[data-bidang-minat]', f).innerHTML = BIDANG.map((b) => `<label class="pilihan"><input type="checkbox" name="bidang" value="${b.kunci}"><span><b>${esc(b.nama)}</b></span></label>`).join('');
 
 let pengguna = null;

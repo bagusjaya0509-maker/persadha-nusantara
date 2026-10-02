@@ -1,13 +1,14 @@
 import { $, $$, BASE, MODE, esc, ikon, roti, denganMemuat, pesanGalat, tanggalPendek, waktuLalu, inisial } from './inti.js';
 import { L } from './layanan.js';
 import { jagaAkun } from './gerbang.js';
-import { PROVINSI, STATUS_ANGGOTA, namaKategori, namaBidang } from './rujukan.js';
+import { PROVINSI, STATUS_ANGGOTA, namaKategori, namaBidang, pasangWilayahNtb } from './rujukan.js';
 import { pilStatus, langkahStatus, rincianLaporan, liniTanggapan, lampiranHtml, bukaDataUrl } from './laporan-tampil.js';
 import { kartuAnggota } from './kartu-anggota.js';
 
 const panel = { laporan: $('[data-panel="laporan"]'), anggota: $('[data-panel="anggota"]'), profil: $('[data-panel="profil"]') };
 const fProfil = $('[data-form-profil]');
 $('[data-provinsi]', fProfil).insertAdjacentHTML('beforeend', PROVINSI.map((p) => `<option>${p}</option>`).join(''));
+pasangWilayahNtb();
 
 let pengguna = null;
 let laporan = [];

@@ -30,5 +30,6 @@ muat();
 // Tautan WhatsApp sekretariat untuk pengunjung saat layanan daring belum aktif
 if (MODE === 'mati') {
   const d = $('.catatan-darurat p');
-  if (d) d.insertAdjacentHTML('beforeend', ` Sekretariat: <a href="https://wa.me/${esc(KONFIG.kontak.whatsapp)}">${esc(KONFIG.kontak.telepon)}</a>.`);
+  const k = KONFIG.kontak?.whatsapp ? KONFIG.kontak : KONFIG.induk;
+  if (d && k?.whatsapp) d.insertAdjacentHTML('beforeend', ` Sekretariat: <a href="https://wa.me/${esc(k.whatsapp)}">${esc(k.telepon)}</a>.`);
 }

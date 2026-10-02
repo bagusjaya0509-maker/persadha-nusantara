@@ -43,6 +43,7 @@ await fs.cp(path.join(AKAR, 'aset'), path.join(KELUAR, 'aset'), { recursive: tru
 const konfigPublik = {
   situs: konfig.situs,
   kontak: konfig.kontak,
+  induk: konfig.induk || {},
   sosial: konfig.sosial,
   firebase: konfig.firebase,
   adminUtama: konfig.adminUtama,
@@ -99,6 +100,33 @@ const tautanSosial = Object.entries(konfig.sosial)
   .map(([nama, url]) => `<a href="${esc(url)}" target="_blank" rel="noopener" aria-label="${nama}"><svg class="ikon"><use href="${BASE}aset/img/ikon.svg#i-${nama}"/></svg></a>`)
   .join('');
 
+// Potongan kontak: hanya tampil bila datanya diisi di situs.config.json.
+const kt = konfig.kontak || {};
+const ikonH = (n) => `<svg class="ikon" aria-hidden="true"><use href="${BASE}aset/img/ikon.svg#i-${n}"/></svg>`;
+const waTautan = kt.whatsapp ? `<a href="https://wa.me/${esc(kt.whatsapp)}" target="_blank" rel="noopener">${ikonH('whatsapp')}${esc(kt.telepon || kt.whatsapp)}</a>` : '';
+const emailTautan = kt.email ? `<a href="mailto:${esc(kt.email)}">${ikonH('mail')}${esc(kt.email)}</a>` : '';
+const kontakAda = Boolean(kt.whatsapp || kt.email || kt.alamat);
+const bilahAlamat = kt.alamatPendek ? `Sekretariat DPD · ${esc(kt.alamatPendek)}` : 'Dewan Pimpinan Daerah Provinsi Nusa Tenggara Barat';
+const bilahKontak = [waTautan, emailTautan.replace('<a ', '<a class="sembunyi-hp" ')].filter(Boolean).join(' ');
+const kakiKontak = kontakAda
+  ? `${kt.alamat ? `<address>${esc(kt.alamat)}</address>` : ''}<ul class="kaki-kontak">${[waTautan, emailTautan].filter(Boolean).map((a) => `<li>${a}</li>`).join('')}</ul>`
+  : `<p>Alamat dan nomor sekretariat sedang dilengkapi. Sementara itu, sampaikan aduan atau aspirasi lewat <a href="${BASE}layanan/">layanan daring</a>.</p>`;
+const hubungiWa = kt.whatsapp
+  ? `lewat WhatsApp sekretariat <a href="https://wa.me/${esc(kt.whatsapp)}">${esc(kt.telepon || kt.whatsapp)}</a>`
+  : 'lewat pengurus DPD NTB yang Anda kenal';
+
+const induk = konfig.induk || {};
+const kontakHalaman = kontakAda
+  ? `<div class="kontak-daftar">
+        ${kt.alamat ? `<div class="kartu kontak-butir">${ikonH('map-pin')}<div><h2>Alamat sekretariat</h2><address>${esc(kt.alamat)}</address>${kt.peta ? `<a class="tombol-teks" href="${esc(kt.peta)}" target="_blank" rel="noopener">Buka di Google Maps ${ikonH('external-link')}</a>` : ''}</div></div>` : ''}
+        ${kt.whatsapp ? `<div class="kartu kontak-butir">${ikonH('whatsapp')}<div><h2>WhatsApp dan telepon</h2><p class="kode" style="font-size:1.1rem">${esc(kt.telepon || kt.whatsapp)}</p><a class="tombol tombol-utama kecil" href="https://wa.me/${esc(kt.whatsapp)}" target="_blank" rel="noopener">Kirim pesan WhatsApp</a></div></div>` : ''}
+        ${kt.email ? `<div class="kartu kontak-butir">${ikonH('mail')}<div><h2>Email</h2><p><a href="mailto:${esc(kt.email)}">${esc(kt.email)}</a></p></div></div>` : ''}
+      </div>`
+  : `<div class="kontak-daftar">
+        <div class="kartu kontak-butir">${ikonH('map-pin')}<div><h2>Sekretariat DPD NTB</h2><p>Alamat dan nomor sekretariat DPD NTB sedang dilengkapi. Aduan, aspirasi, dan pendaftaran anggota sudah bisa dikirim lewat <a href="${BASE}layanan/">layanan daring</a> dan dibaca langsung oleh pengurus.</p></div></div>
+        ${induk.whatsapp ? `<div class="kartu kontak-butir">${ikonH('whatsapp')}<div><h2>Keperluan mendesak</h2><p>Hubungi sekretariat DPP Persadha Nusantara di Jakarta. Pesan Anda diteruskan ke pengurus DPD NTB.</p><p class="kode" style="font-size:1.05rem">${esc(induk.telepon)}</p><a class="tombol tombol-utama kecil" href="https://wa.me/${esc(induk.whatsapp)}" target="_blank" rel="noopener">WhatsApp sekretariat DPP</a></div></div>` : ''}
+      </div>`;
+
 const dataUmum = {
   BASE,
   ASAL,
@@ -107,6 +135,12 @@ const dataUmum = {
   situs: konfig.situs,
   kontak: konfig.kontak,
   tautan_sosial: tautanSosial,
+  bilah_alamat: bilahAlamat,
+  bilah_kontak: bilahKontak,
+  kaki_kontak: kakiKontak,
+  hubungi_wa: hubungiWa,
+  kontak_halaman: kontakHalaman,
+  kontak_email: kt.email ? `<a href="mailto:${esc(kt.email)}">${esc(kt.email)}</a>` : 'pengurus DPD NTB',
 };
 
 function ambil(obj, kunci) {
@@ -132,26 +166,21 @@ function bacaMeta(sumber, nama) {
 const ORGANISASI_LD = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Persadha Nusantara',
-  alternateName: [konfig.situs.namaLengkap, konfig.situs.namaBadanHukum],
+  name: 'DPD Persadha Nusantara Provinsi Nusa Tenggara Barat',
+  alternateName: ['Persadha Nusantara NTB', konfig.situs.namaLengkap],
   url: ASAL,
   logo: ASAL + 'aset/img/lambang-512.png',
-  email: konfig.kontak.email,
-  telephone: '+' + konfig.kontak.whatsapp,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Jl. Sawah Lunto No. 50, Pasar Manggis, Setiabudi',
-    addressLocality: 'Jakarta Selatan',
-    postalCode: '12970',
-    addressCountry: 'ID',
-  },
+  ...(kt.email ? { email: kt.email } : {}),
+  ...(kt.whatsapp ? { telephone: '+' + kt.whatsapp } : {}),
+  areaServed: { '@type': 'AdministrativeArea', name: 'Nusa Tenggara Barat' },
+  parentOrganization: { '@type': 'Organization', name: 'DPP Persadha Nusantara', legalName: konfig.situs.namaBadanHukum },
   sameAs: Object.values(konfig.sosial).filter(Boolean),
 };
 
 function rakit({ meta, badan, nama, sisip = {} }) {
   const tpl = templat[meta.templat || 'dasar'];
   const kanonik = meta.path === '404.html' ? '' : ASAL + (meta.path || '');
-  const judulLengkap = meta.judulPenuh || `${meta.judul} — Persadha Nusantara`;
+  const judulLengkap = meta.judulPenuh || `${meta.judul} — Persadha Nusantara NTB`;
   const skrip = (meta.skrip || [])
     .map((s) => `<script type="module" src="${BASE}aset/js/${s}?v=${V}"></script>`)
     .join('\n');
@@ -286,7 +315,7 @@ let jumlahKabar = 0;
           meta: {
             ...templatBaca.meta,
             judul: kabar.judul,
-            judulPenuh: `${kabar.judul} — Persadha Nusantara`,
+            judulPenuh: `${kabar.judul} — Persadha Nusantara NTB`,
             deskripsi: ringkas,
             path: `kabar/${slug}/`,
             ogGambar,
@@ -300,8 +329,8 @@ let jumlahKabar = 0;
               image: [ogGambar],
               datePublished: iso,
               dateModified: kabar.diubah ? new Date(kabar.diubah).toISOString() : iso,
-              author: { '@type': 'Organization', name: kabar.penulis || 'Persadha Nusantara' },
-              publisher: { '@type': 'Organization', name: 'Persadha Nusantara', logo: { '@type': 'ImageObject', url: ASAL + 'aset/img/lambang-512.png' } },
+              author: { '@type': 'Organization', name: kabar.penulis || 'Persadha Nusantara NTB' },
+              publisher: { '@type': 'Organization', name: 'DPD Persadha Nusantara NTB', logo: { '@type': 'ImageObject', url: ASAL + 'aset/img/lambang-512.png' } },
               mainEntityOfPage: urlHalaman,
             },
           },

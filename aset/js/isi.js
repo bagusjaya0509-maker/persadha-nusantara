@@ -157,9 +157,9 @@ export function buatSlug(teks) {
 }
 
 const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-/** Tanggal gaya Indonesia tanpa Intl (aman dipakai di Node build). Zona WIB. */
+/** Tanggal gaya Indonesia tanpa Intl (aman dipakai di Node build). Zona WITA (NTB). */
 export function tanggalPanjang(ms) {
   if (!ms) return '';
-  const d = new Date(Number(ms) + 7 * 3600e3);
+  const d = new Date(Number(ms) + 8 * 3600e3);
   return `${d.getUTCDate()} ${BULAN[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }

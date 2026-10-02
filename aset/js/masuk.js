@@ -1,6 +1,6 @@
 import { $, $$, BASE, MODE, param, ikon, denganMemuat, pesanGalat, roti } from './inti.js';
 import { L, pantauSesi } from './layanan.js';
-import { PROVINSI } from './rujukan.js';
+import { PROVINSI, pasangWilayahNtb } from './rujukan.js';
 import { kartuMati } from './gerbang.js';
 
 const blok = $('[data-blok-akun]');
@@ -27,6 +27,7 @@ if (MODE === 'mati') {
 }
 
 $('[data-provinsi]').insertAdjacentHTML('beforeend', PROVINSI.map((p) => `<option>${p}</option>`).join(''));
+pasangWilayahNtb();
 
 const form = { masuk: $('[data-form="masuk"]'), daftar: $('[data-form="daftar"]'), lupa: $('[data-form="lupa"]') };
 function pilihTab(nama) {

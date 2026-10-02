@@ -1,21 +1,22 @@
 {
   "situs": {
-    "nama": "Persadha Nusantara",
-    "namaLengkap": "Pergerakan Sanathana Dharma Nusantara",
+    "nama": "Persadha Nusantara NTB",
+    "namaLengkap": "Dewan Pimpinan Daerah Provinsi Nusa Tenggara Barat",
     "namaBadanHukum": "Perkumpulan Pergerakan Sanatana Dharma Nusantara",
     "url": "https://bagusjaya0509-maker.github.io/persadha-nusantara/",
-    "deskripsi": "Situs resmi Dewan Pimpinan Pusat Persadha Nusantara: kabar kegiatan, visi dan misi, program kerja, serta layanan pengaduan dan aspirasi umat Hindu Indonesia."
+    "deskripsi": "Situs resmi DPD Persadha Nusantara Provinsi Nusa Tenggara Barat: kabar kegiatan, susunan pengurus 2026–2031, serta layanan pengaduan, aspirasi, dan keanggotaan umat Hindu di Lombok dan Sumbawa.",
+    "wilayah": "Nusa Tenggara Barat"
   },
   "kontak": {
-    "alamat": "Jl. Sawah Lunto No. 50, Pasar Manggis, Setiabudi, Jakarta Selatan 12970",
-    "alamatPendek": "Jl. Sawah Lunto No. 50, Jakarta Selatan",
-    "telepon": "0821-1304-3997",
-    "whatsapp": "6282113043997",
-    "email": "dpppersadhanusantara@gmail.com",
-    "peta": "https://www.google.com/maps/search/?api=1&query=Jl.+Sawah+Lunto+No.+50+Pasar+Manggis+Setiabudi+Jakarta+Selatan"
+    "alamat": "",
+    "alamatPendek": "",
+    "telepon": "",
+    "whatsapp": "",
+    "email": "",
+    "peta": ""
   },
   "sosial": {
-    "instagram": "https://www.instagram.com/persadha.nusantara/",
+    "instagram": "",
     "facebook": "",
     "youtube": ""
   },
@@ -31,6 +32,13 @@
     "dpppersadhanusantara@gmail.com"
   ],
   "notifikasi": {
-    "emailAduanBaru": "dpppersadhanusantara@gmail.com"
+    "emailAduanBaru": ""
+  },
+  "induk": {
+    "nama": "DPP Persadha Nusantara",
+    "alamat": "Jl. Sawah Lunto No. 50, Pasar Manggis, Setiabudi, Jakarta Selatan 12970",
+    "telepon": "0821-1304-3997",
+    "whatsapp": "6282113043997",
+    "email": "dpppersadhanusantara@gmail.com"
   }
 }

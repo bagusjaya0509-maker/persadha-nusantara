@@ -1,5 +1,6 @@
-// Tiga kabar pertama, disusun dari dokumen legal organisasi (SK Menteri
-// Hukum, Akta Notaris No. 01/2025, dan NIB). Mode demo memakainya sebagai
+// Kabar pertama, disusun dari dokumen resmi: SK DPP No. 04/SK/DPP PERSADHA
+// NUSANTARA/VIII/2026 (pengurus DPD NTB) dan SK Menteri Hukum
+// AHU-0002242.AH.01.08.TAHUN 2025 (pengurus DPP). Mode demo memakainya sebagai
 // isi awal; di panel pengurus ada tombol untuk menerbitkannya ke Firebase.
 
 const p = (teks, a) => [{ insert: teks, ...(a ? { attributes: a } : {}) }, { insert: '\n' }];
@@ -10,53 +11,52 @@ const wib = (t) => Date.parse(t + 'T09:00:00+07:00');
 
 export const KABAR_AWAL = [
   {
-    slug: 'nib-terbit-persadha-nusantara-tercatat-di-oss',
-    judul: 'NIB Terbit, Persadha Nusantara Tercatat di Sistem OSS',
+    slug: 'dpp-tetapkan-pengurus-dpd-persadha-nusantara-ntb-2026-2031',
+    judul: 'DPP Tetapkan Pengurus DPD Persadha Nusantara NTB Masa Bhakti 2026–2031',
     kategori: 'Berita',
-    penulis: 'Sekretariat DPP',
-    terbitPada: wib('2026-04-28'),
-    ringkasan: 'Nomor Induk Berusaha 2804260022115 terbit pada 28 April 2026 untuk kegiatan pelestarian cagar budaya dan wisata budaya.',
+    penulis: 'Sekretariat DPD NTB',
+    terbitPada: wib('2026-08-20'),
+    unggulan: true,
+    ringkasan: 'SK DPP Nomor 04/SK/DPP PERSADHA NUSANTARA/VIII/2026 mengesahkan pengurus DPD Provinsi Nusa Tenggara Barat yang diketuai I Putu Alit Arsana, S.H., M.Kn.',
     delta: jadi(
-      p('Persadha Nusantara kini memiliki Nomor Induk Berusaha (NIB) 2804260022115. NIB itu diterbitkan lewat sistem Online Single Submission (OSS) pada 28 April 2026 atas nama Perkumpulan Pergerakan Sanatana Dharma Nusantara.'),
-      p('NIB mencatat dua bidang kegiatan organisasi: peninggalan sejarah atau cagar budaya yang dikelola swasta (KBLI 91024) dan wisata budaya lainnya (KBLI 91029). Keduanya berlokasi di sekretariat DPP, Jalan Sawah Lunto Nomor 50, Jakarta Selatan.'),
-      p('NIB berlaku sebagai identitas dan bukti pendaftaran organisasi di OSS untuk menjalankan kegiatan pada kedua bidang tersebut. Dokumen ini melengkapi status badan hukum perkumpulan yang sudah disahkan Kementerian Hukum sejak 2019.'),
-    ),
-  },
-  {
-    slug: 'sekretariat-dpp-persadha-nusantara-pindah-ke-jakarta-selatan',
-    judul: 'Sekretariat DPP Persadha Nusantara Kini di Jakarta Selatan',
-    kategori: 'Pengumuman',
-    penulis: 'Sekretariat DPP',
-    terbitPada: wib('2025-12-09'),
-    ringkasan: 'Surat, undangan, dan kunjungan untuk Dewan Pimpinan Pusat kini ditujukan ke Jl. Sawah Lunto No. 50, Pasar Manggis, Setiabudi.',
-    delta: jadi(
-      p('Sejak Desember 2025, sekretariat Dewan Pimpinan Pusat Persadha Nusantara berpindah dari Jalan Ciung Wanara I Nomor 36, Denpasar, ke Jakarta Selatan. Perpindahan ini diputuskan dalam Rapat Pengurus 29 November 2025 dan tercatat dalam Akta Nomor 01 tanggal 4 Desember 2025.'),
-      h2('Alamat baru'),
-      p('Jl. Sawah Lunto No. 50, Kelurahan Pasar Manggis, Kecamatan Setiabudi, Jakarta Selatan 12970', { bold: true }),
-      p('Surat resmi, undangan, dan permohonan audiensi untuk DPP mohon dikirim ke alamat tersebut. Untuk pertanyaan cepat, sekretariat dapat dihubungi lewat WhatsApp 0821-1304-3997 atau email dpppersadhanusantara@gmail.com.'),
-      p('Umat yang menghadapi persoalan hukum atau konflik dapat mengirim aduan lewat situs ini tanpa harus datang ke sekretariat. Setiap aduan mendapat nomor, dan statusnya bisa dipantau dari akun pelapor.'),
+      p('Dewan Pimpinan Pusat Persadha Nusantara mengesahkan susunan pengurus Dewan Pimpinan Daerah Provinsi Nusa Tenggara Barat untuk masa bhakti 2026–2031. Pengesahan itu tertuang dalam Surat Keputusan Nomor 04/SK/DPP PERSADHA NUSANTARA/VIII/2026 yang ditetapkan di Jakarta pada 20 Agustus 2026 dan ditandatangani Ketua Umum DPP, D. Sures Kumar, S.Ag., M.Si.'),
+      p('Susunan pengurus disusun dalam rapat pada 18 Agustus 2026 berdasarkan Surat Mandat DPP Nomor 001/SM/DPP PERSADHA Nusantara/VIII/2026. Kepengurusan ini berlaku sampai Agustus 2031. Sesudahnya, DPD NTB wajib menggelar pemilihan kembali.'),
+      h2('Pengurus harian'),
+      li('Ketua: I Putu Alit Arsana, S.H., M.Kn.'),
+      li('Wakil Ketua I: Ida Bagus Benny Surya Adi Pramana, M.I.Kom.'),
+      li('Wakil Ketua II: Nyoman Loji Sagita'),
+      li('Sekretaris: Bagus Jaye Puspite, S.H.'),
+      li('Wakil Sekretaris: Wayan Widyatmaja, S.Pd., M.Pd.'),
+      li('Bendahara: Komang Agus Alit Putra, S.M.'),
+      li('Wakil Bendahara: I Gede Pasek Artana, S.H.'),
+      p('Dewan Penasihat dan Pengawas diketuai Nyoman Widhiarsana, S.T., bersama enam anggota.'),
+      h2('Enam bidang kerja'),
+      li('Organisasi, Keanggotaan, dan Kaderisasi — koordinator Putu Witendra Mahardika, S.Pd.H.'),
+      li('Sosial Ekonomi — koordinator I Ketut Kasih Adnyana, S.TP.'),
+      li('Penelitian dan Pengembangan — koordinator I Gede Wira Aditya Tanaya, S.I.Kom.'),
+      li('Agama, Budaya, dan Lingkungan — koordinator Ida Bagus Ary Siswantara, S.H., M.I.Kom.'),
+      li('Hubungan Masyarakat dan Antarlembaga Hindu — koordinator I Wayan Sutawa, S.Pd., S.H., M.I.Kom.'),
+      li('Pergerakan Sosial Politik, Hukum, dan Advokasi — koordinator I Made Agus Artana, S.H., M.H.'),
+      p('Susunan lengkap pengurus, termasuk anggota tiap bidang, tercantum di halaman Tentang.'),
     ),
   },
   {
     slug: 'kemenkum-sahkan-susunan-pengurus-persadha-nusantara-2025-2030',
-    judul: 'Kemenkum Sahkan Susunan Pengurus Persadha Nusantara 2025–2030',
+    judul: 'Kemenkum Sahkan Susunan Pengurus DPP Persadha Nusantara 2025–2030',
     kategori: 'Berita',
-    penulis: 'Sekretariat DPP',
+    penulis: 'Sekretariat DPD NTB',
     terbitPada: wib('2025-12-08'),
-    unggulan: true,
-    ringkasan: 'Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025 menyetujui perubahan perkumpulan, termasuk kepengurusan baru yang dipimpin D Sures Kumar.',
+    ringkasan: 'Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025 menyetujui perubahan perkumpulan, termasuk kepengurusan pusat yang dipimpin D Sures Kumar.',
     delta: jadi(
-      p('Menteri Hukum menyetujui perubahan Perkumpulan Pergerakan Sanatana Dharma Nusantara (Persadha Nusantara) pada 8 Desember 2025. Persetujuan itu tertuang dalam Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025 dan berlaku sejak tanggal ditetapkan.'),
-      p('Perubahan tersebut berawal dari Rapat Pengurus pada 29 November 2025. Rapat memilih kepengurusan Dewan Pimpinan Pusat masa bhakti 2025–2030 sekaligus memindahkan sekretariat dari Denpasar ke Jakarta Selatan. Keputusan rapat kemudian dituangkan dalam Akta Nomor 01 tanggal 4 Desember 2025 di hadapan Notaris Siti Susyanthi, S.H., M.Kn.'),
-      h2('Susunan pengurus dan pengawas'),
+      p('Menteri Hukum menyetujui perubahan Perkumpulan Pergerakan Sanatana Dharma Nusantara (Persadha Nusantara) pada 8 Desember 2025. Persetujuan itu tertuang dalam Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025. Keputusan ini menjadi dasar hukum bagi Dewan Pimpinan Pusat yang kemudian membentuk kepengurusan di daerah, termasuk DPD Nusa Tenggara Barat.'),
+      p('Rapat Pengurus pada 29 November 2025 memilih kepengurusan DPP masa bhakti 2025–2030 dan memindahkan sekretariat pusat dari Denpasar ke Jakarta Selatan. Keputusan rapat dituangkan dalam Akta Nomor 01 tanggal 4 Desember 2025 di hadapan Notaris Siti Susyanthi, S.H., M.Kn.'),
+      h2('Pengurus DPP 2025–2030'),
       li('Ketua Umum: D Sures Kumar'),
       li('Wakil Ketua Umum: Gede Suardana'),
       li('Sekretaris Jenderal: Anak Agung Ayu Ari Widhyasari, S.H., M.Kn.'),
       li('Bendahara Umum: Komang Juli Agustawan'),
       li('Wakil Ketua: I Gede Ariawan, Yan Mitha Djaksana, I Made Sudanayasa, dan I Made Bawayasa'),
       li('Pengawas: Gede Pasek Suardika, S.H., M.H., I Wayan Jondra, dan I Ketut Wiriana'),
-      p('Gede Pasek Suardika memimpin perkumpulan sebagai Ketua Umum pada periode 2019–2025. Pada kepengurusan baru, ia duduk di jajaran pengawas bersama I Wayan Jondra dan I Ketut Wiriana.'),
-      p('Rapat juga memberi kuasa kepada Ketua Umum, Sekretaris Jenderal, dan Wakil Ketua I Gede Ariawan untuk mengurus administrasi organisasi di notaris, Kementerian Hukum, dan pihak lain.'),
     ),
   },
 ];

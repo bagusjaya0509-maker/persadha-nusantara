@@ -3,6 +3,7 @@
     <div class="kaki-merek">
       <img src="{{BASE}}aset/img/lambang.svg" alt="Lambang Persadha Nusantara" width="58" height="79" loading="lazy">
       <p class="kaki-nama">Persadha Nusantara</p>
+      <p class="kaki-wilayah">Dewan Pimpinan Daerah Provinsi Nusa Tenggara Barat</p>
       <p class="kaki-motto">Berlandaskan Dharma, bergerak untuk Nusantara.</p>
       <p class="kaki-deva" lang="sa">धर्मो रक्षति रक्षितः</p>
     </div>
@@ -11,7 +12,7 @@
       <ul>
         <li><a href="{{BASE}}tentang/">Tentang kami</a></li>
         <li><a href="{{BASE}}tentang/#visi-misi">Visi dan misi</a></li>
-        <li><a href="{{BASE}}tentang/#pengurus">Susunan pengurus</a></li>
+        <li><a href="{{BASE}}tentang/#pengurus">Pengurus 2026–2031</a></li>
         <li><a href="{{BASE}}tentang/#legalitas">Legalitas</a></li>
         <li><a href="{{BASE}}program/">Program kerja</a></li>
       </ul>
@@ -27,17 +28,13 @@
       </ul>
     </nav>
     <div class="kaki-kolom">
-      <h2>Sekretariat DPP</h2>
-      <address>{{kontak.alamat}}</address>
-      <ul class="kaki-kontak">
-        <li><a href="https://wa.me/{{kontak.whatsapp}}" target="_blank" rel="noopener"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-whatsapp"/></svg>{{kontak.telepon}}</a></li>
-        <li><a href="mailto:{{kontak.email}}"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-mail"/></svg>{{kontak.email}}</a></li>
-      </ul>
+      <h2>Sekretariat DPD NTB</h2>
+      {{kaki_kontak}}
       <div class="kaki-sosial">{{tautan_sosial}}</div>
     </div>
   </div>
   <div class="wadah kaki-bawah">
-    <p>© {{tahun}} {{situs.namaBadanHukum}}. Badan hukum perkumpulan sejak 2019.</p>
+    <p>© {{tahun}} DPD Persadha Nusantara Provinsi NTB · {{situs.namaBadanHukum}}</p>
     <p><a href="{{BASE}}privasi/">Kebijakan privasi</a><span aria-hidden="true"> · </span><a href="{{BASE}}admin/">Panel pengurus</a></p>
   </div>
 </footer>

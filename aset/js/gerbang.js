@@ -2,13 +2,15 @@
 import { MODE, KONFIG, BASE, esc, ikon } from './inti.js';
 import { pantauSesi } from './layanan.js';
 
-const wa = () => `<a href="https://wa.me/${esc(KONFIG.kontak.whatsapp)}" target="_blank" rel="noopener">${esc(KONFIG.kontak.telepon)}</a>`;
+// Kontak sekretariat DPD; bila belum diisi, pakai kontak DPP (induk) agar warga tetap punya jalur.
+const kontak = () => (KONFIG.kontak?.whatsapp ? KONFIG.kontak : KONFIG.induk || {});
+const wa = () => `<a href="https://wa.me/${esc(kontak().whatsapp)}" target="_blank" rel="noopener">${esc(kontak().telepon)}</a>`;
 
 export function kartuMati() {
   return `<div class="kartu kartu-gerbang">
     ${ikon('clock', 'ikon ikon-besar')}
     <h2>Layanan daring sedang disiapkan</h2>
-    <p>Formulir ini belum tersambung ke server. Sementara itu, sampaikan aduan, aspirasi, atau pendaftaran anggota lewat WhatsApp sekretariat ${wa()} atau email <a href="mailto:${esc(KONFIG.kontak.email)}">${esc(KONFIG.kontak.email)}</a>.</p>
+    <p>Formulir ini belum tersambung ke server. Sementara itu, sampaikan aduan, aspirasi, atau pendaftaran anggota lewat WhatsApp sekretariat ${wa()} atau email <a href="mailto:${esc(kontak().email)}">${esc(kontak().email)}</a>.</p>
   </div>`;
 }
 

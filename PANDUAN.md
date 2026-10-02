@@ -1,4 +1,7 @@
-# Panduan situs Persadha Nusantara
+# Panduan situs Persadha Nusantara NTB
+
+Situs ini milik DPD Persadha Nusantara Provinsi Nusa Tenggara Barat. Versi untuk DPP pusat
+tersimpan di cabang `situs-dpp-pusat`; buat repositori baru dari cabang itu bila DPP memintanya.
 
 Situs ini statis (HTML, CSS, JavaScript) dan disajikan **GitHub Pages** tanpa server sendiri.
 Fitur yang butuh penyimpanan — akun, aduan, aspirasi, keanggotaan, dan kabar dari panel
@@ -100,6 +103,15 @@ Bila kabar baru tidak lagi mendapat halaman statis, buka tab Actions dan aktifka
 4. Ubah `situs.url` di `situs.config.json` ke alamat baru, tambahkan domain itu di
    Firebase → Authentication → Authorized domains, lalu push.
 5. Setelah sertifikat HTTPS terbit, centang *Enforce HTTPS*.
+
+## Kontak sekretariat DPD NTB
+
+Kolom `kontak` di `situs.config.json` sengaja kosong sampai alamat, WhatsApp, dan email
+sekretariat DPD NTB ditetapkan. Selama kosong, kepala dan kaki halaman tidak menampilkan
+kontak, dan halaman Kontak mengarahkan keperluan mendesak ke sekretariat DPP (`induk`).
+Isi kolom berikut lalu push: `alamat`, `alamatPendek`, `telepon`, `whatsapp` (format 628…),
+`email`, `peta` (tautan Google Maps). Isi juga `notifikasi.emailAduanBaru` agar pengurus
+menerima email setiap ada aduan baru.
 
 ## Yang perlu diperiksa pengurus
 
