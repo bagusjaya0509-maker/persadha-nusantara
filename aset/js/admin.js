@@ -342,7 +342,7 @@ async function vEditor(slug) {
           <div class="medan"><label for="e-ket">Keterangan foto</label><input id="e-ket" data-e="keteranganSampul" type="text" maxlength="200" value="${esc(k.keteranganSampul)}" placeholder="Contoh: Bakti sosial di Pura Agung, Lampung Tengah"></div>
           <button class="tombol-teks" type="button" data-hapus-sampul ${k.sampul ? '' : 'hidden'}>${ikon('trash-2')}Hapus foto sampul</button>
         </section>
-        ${lama ? `<section class="adm-kartu medan-kecil"><h2>Lainnya</h2><div class="editor-tombol">${k.terbit ? `<button class="tombol tombol-garis lebar" type="button" data-tarik>${ikon('eye-off')}Tarik dari situs</button>` : ''}<button class="tombol tombol-hapus lebar" type="button" data-hapus-kabar>${ikon('trash-2')}Hapus kabar</button></div></section>` : ''}
+        ${lama && saya.utama ? `<section class="adm-kartu medan-kecil"><h2>Lainnya</h2><div class="editor-tombol">${k.terbit ? `<button class="tombol tombol-garis lebar" type="button" data-tarik>${ikon('eye-off')}Tarik dari situs</button>` : ''}<button class="tombol tombol-hapus lebar" type="button" data-hapus-kabar>${ikon('trash-2')}Hapus kabar</button></div></section>` : ''}
       </aside>
     </div>`;
 
@@ -790,12 +790,13 @@ async function vPengguna() {
       <h2>Pengurus dengan akses panel</h2>
       <ul class="adm-daftar-admin">
         ${utama.map((e) => `<li><span><b>${esc(e)}</b><small>Pengurus utama (diatur di konfigurasi situs)</small></span></li>`).join('')}
-        ${admin.filter((a) => !utama.includes(a.email)).map((a) => `<li><span><b>${esc(a.nama || a.email)}</b><small>${esc(a.email)} · ditambahkan ${esc(tanggalPendek(a.ditambahkan))}${a.oleh ? ` oleh ${esc(a.oleh)}` : ''}</small></span>${a.id !== saya.uid ? `<button class="tombol tombol-hapus kecil" type="button" data-cabut="${a.id}">Cabut akses</button>` : '<span class="status">Anda</span>'}</li>`).join('')}
+        ${admin.filter((a) => !utama.includes(a.email)).map((a) => `<li><span><b>${esc(a.nama || a.email)}</b><small>${a.utama ? '<b>Pengurus utama</b> · ' : 'Pengurus · '}${esc(a.email)} · ditambahkan ${esc(tanggalPendek(a.ditambahkan))}${a.oleh ? ` oleh ${esc(a.oleh)}` : ''}</small></span>${a.id === saya.uid ? '<span class="status">Anda</span>' : saya.utama ? `<button class="tombol tombol-hapus kecil" type="button" data-cabut="${a.id}">Cabut akses</button>` : ''}</li>`).join('')}
       </ul>
-      <form class="adm-tambah-admin" data-tambah-admin>
-        <div class="medan"><label for="ta-email">Tambah pengurus</label><input id="ta-email" name="email" type="email" required placeholder="email@contoh.com"><p class="petunjuk">Orangnya harus sudah membuat akun di situs ini.</p></div>
+      ${saya.utama ? `<form class="adm-tambah-admin" data-tambah-admin>
+        <div class="medan"><label for="ta-email">Tambah pengurus</label><input id="ta-email" name="email" type="email" required placeholder="email@contoh.com"><p class="petunjuk">Orangnya harus sudah membuat akun di situs ini. Untuk mengubah peran pengurus yang sudah ada, tambahkan lagi emailnya dengan pilihan yang baru.</p></div>
+        <label class="centang"><input type="checkbox" name="utama"><span><b>Jadikan pengurus utama</b><br><small>Boleh menurunkan dan menghapus kabar serta mengatur pengurus. Pengurus biasa hanya bisa menulis dan menerbitkan kabar.</small></span></label>
         <button class="tombol tombol-utama" type="submit">${ikon('user-check')}Beri akses</button>
-      </form>
+      </form>` : '<p class="petunjuk">Hanya pengurus utama yang dapat menambah atau mencabut akses pengurus.</p>'}
     </section>
     <section>
       <div class="adm-saring"><label class="cari"><span class="sr-only">Cari pengguna</span>${ikon('search')}<input type="search" data-cari-pengguna placeholder="Cari nama atau email"></label></div>
@@ -821,10 +822,12 @@ async function vPengguna() {
     if (!confirm('Cabut akses panel pengurus untuk akun ini?')) return;
     denganMemuat(b, async () => { try { await L.hapusAdmin(b.dataset.cabut); roti('Akses dicabut.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
   }));
-  $('[data-tambah-admin]').addEventListener('submit', (e) => {
+  $('[data-tambah-admin]')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const f = e.currentTarget;
-    denganMemuat($('[type=submit]', f), async () => { try { await L.tambahAdmin(f.email.value); roti('Akses pengurus diberikan.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
+    const jadiUtama = f.utama.checked;
+    if (jadiUtama && !confirm(`Jadikan ${f.email.value} pengurus utama? Akun ini akan bisa menurunkan dan menghapus kabar serta mengatur pengurus lain.`)) return;
+    denganMemuat($('[type=submit]', f), async () => { try { await L.tambahAdmin(f.email.value, jadiUtama); roti(jadiUtama ? 'Akses pengurus utama diberikan.' : 'Akses pengurus diberikan.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
   });
   $('[data-unduh]').addEventListener('click', () => unduhBlob(buatXlsx([{ nama: 'Pengguna', kolom: ['Nama', 'Email', 'WhatsApp', 'Provinsi', 'Kab/Kota', 'Daftar', 'Pengurus', 'Diblokir'].map((judul) => ({ judul, lebar: 24 })), baris: pengguna.map((u) => [u.nama, u.email, u.wa || '', u.provinsi || '', u.kota || '', tanggalJam(u.dibuat), u.admin ? 'Ya' : '', u.diblokir ? 'Ya' : '']) }]), `pengguna-persadha-${new Date().toISOString().slice(0, 10)}.xlsx`));
 }

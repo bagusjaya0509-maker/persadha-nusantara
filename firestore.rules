@@ -25,6 +25,12 @@ service cloud.firestore {
     function pengurus() {
       return adminUtama() || (masuk() && exists(/databases/$(database)/documents/admin/$(saya())));
     }
+    // Pengurus utama: email di adminUtama ATAU dokumen admin/{uid} dengan utama == true.
+    // Hanya pengurus utama yang boleh menurunkan/menghapus kabar dan mengatur daftar pengurus.
+    // Email pengurus utama lain SENGAJA tidak ditulis di sini (repo publik); tandai lewat panel.
+    function utama() {
+      return adminUtama() || (masuk() && get(/databases/$(database)/documents/admin/$(saya())).data.get('utama', false) == true);
+    }
     function tidakDiblokir() { return !exists(/databases/$(database)/documents/blokir/$(saya())); }
     function teks(v, maks) { return v is string && v.size() <= maks; }
     function teksWajib(v, min, maks) { return v is string && v.size() >= min && v.size() <= maks; }
@@ -37,11 +43,13 @@ service cloud.firestore {
     // ---------- kabar ----------
     match /kabar/{slug} {
       allow read: if true;
-      allow write: if pengurus() && slug.matches('^[a-z0-9-]{1,90}$');
+      allow create, update: if pengurus() && slug.matches('^[a-z0-9-]{1,90}$');
+      allow delete: if utama();
     }
     match /kabarIsi/{slug} {
       allow read: if true;
-      allow write: if pengurus() && slug.matches('^[a-z0-9-]{1,90}$');
+      allow create, update: if pengurus() && slug.matches('^[a-z0-9-]{1,90}$');
+      allow delete: if utama();
     }
     match /draf/{slug} {
       allow read, write: if pengurus();
@@ -68,7 +76,8 @@ service cloud.firestore {
     // ---------- pengurus & blokir ----------
     match /admin/{id} {
       allow get: if masuk() && (saya() == id || pengurus());
-      allow list, write: if pengurus();
+      allow list: if pengurus();
+      allow write: if utama();
     }
     match /blokir/{id} {
       allow get: if masuk() && (saya() == id || pengurus());

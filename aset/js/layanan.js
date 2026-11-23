@@ -94,8 +94,11 @@ async function fbMuatProfil(u) {
     if (!u) return umumkan(null);
     try {
       const email = (u.email || '').toLowerCase();
-      let admin = ADMIN_UTAMA.includes(email) && u.emailVerified;
-      if (!admin) admin = (await F.getDoc(F.doc(db, 'admin', u.uid)).catch(() => null))?.exists() || false;
+      const viaEmail = ADMIN_UTAMA.includes(email) && u.emailVerified;
+      const snapAdmin = await F.getDoc(F.doc(db, 'admin', u.uid)).catch(() => null);
+      const admin = viaEmail || snapAdmin?.exists() || false;
+      // Pengurus utama boleh menurunkan/menghapus kabar dan mengatur pengurus (dijaga juga oleh firestore.rules).
+      const utama = viaEmail || snapAdmin?.data()?.utama === true;
       const ref = F.doc(db, 'pengguna', u.uid);
       let profil = await F.getDoc(ref).catch(() => null);
       if (profil && !profil.exists() && !sedangDaftar) {
@@ -109,7 +112,7 @@ async function fbMuatProfil(u) {
       const diblokir = (await F.getDoc(F.doc(db, 'blokir', u.uid)).catch(() => null))?.exists() || false;
       umumkan({
         uid: u.uid, email, nama: data.nama || u.displayName || email, wa: data.wa || '', provinsi: data.provinsi || '', kota: data.kota || '',
-        terverifikasi: u.emailVerified, penyedia: u.providerData[0]?.providerId || 'password', admin, diblokir,
+        terverifikasi: u.emailVerified, penyedia: u.providerData[0]?.providerId || 'password', admin, utama, diblokir,
       });
     } catch (e) {
       console.error(e);
@@ -318,7 +321,10 @@ const fbMesin = {
     ]);
     const blokir = new Set(bl.docs.map((d) => d.id));
     const admin = new Set(ad.docs.map((d) => d.id));
-    return pg.docs.map(rapikan).map((u) => ({ ...u, diblokir: blokir.has(u.id), admin: admin.has(u.id) || ADMIN_UTAMA.includes(u.email) }));
+    const utama = new Set(ad.docs.filter((d) => d.data().utama === true).map((d) => d.id));
+    return pg.docs.map(rapikan).map((u) => ({
+      ...u, diblokir: blokir.has(u.id), admin: admin.has(u.id) || ADMIN_UTAMA.includes(u.email), utama: utama.has(u.id) || ADMIN_UTAMA.includes(u.email),
+    }));
   },
   async aturBlokir(uid, blokir) {
     const p = wajibAdmin();
@@ -333,13 +339,13 @@ const fbMesin = {
     const s = await F.getDocs(F.collection(db, 'admin'));
     return s.docs.map(rapikan);
   },
-  async tambahAdmin(email) {
+  async tambahAdmin(email, jadikanUtama = false) {
     const p = wajibAdmin();
     const { F, db } = await fb();
     const s = await F.getDocs(F.query(F.collection(db, 'pengguna'), F.where('email', '==', email.trim().toLowerCase())));
     if (s.empty) throw galat('TIDAK_ADA', 'Belum ada akun dengan email itu. Minta yang bersangkutan mendaftar di situs dulu, lalu tambahkan lagi.');
     const u = s.docs[0];
-    await F.setDoc(F.doc(db, 'admin', u.id), { email: u.data().email, nama: u.data().nama, oleh: p.email, ditambahkan: F.serverTimestamp() });
+    await F.setDoc(F.doc(db, 'admin', u.id), { email: u.data().email, nama: u.data().nama, utama: Boolean(jadikanUtama), oleh: p.email, ditambahkan: F.serverTimestamp() });
   },
   async hapusAdmin(uid) {
     wajibAdmin();
@@ -448,7 +454,7 @@ function profilDemo(s, uid) {
   return {
     uid, email: u.email, nama: u.nama, wa: u.wa || '', provinsi: u.provinsi || '', kota: u.kota || '',
     terverifikasi: true, penyedia: u.penyedia || 'password',
-    admin: ADMIN_UTAMA.includes(u.email) || Boolean(s.admin[uid]), diblokir: Boolean(s.blokir[uid]),
+    admin: ADMIN_UTAMA.includes(u.email) || Boolean(s.admin[uid]), utama: ADMIN_UTAMA.includes(u.email) || s.admin[uid]?.utama === true, diblokir: Boolean(s.blokir[uid]),
   };
 }
 function segarkanSesi() {
@@ -506,7 +512,7 @@ const demoMesin = {
         s.akun[e] = { uid, sandi: d.idAcak(12) };
         s.pengguna[uid] = { nama: 'Sekretariat DPD NTB', email: e, wa: '081234567890', provinsi: 'Nusa Tenggara Barat', kota: 'Kota Mataram', dibuat: Date.now(), diubah: Date.now() };
       }
-      s.admin[s.akun[e].uid] = { email: e, nama: 'Sekretariat DPD NTB', ditambahkan: Date.now() };
+      s.admin[s.akun[e].uid] = { email: e, nama: 'Sekretariat DPD NTB', utama: true, ditambahkan: Date.now() };
       s.sesi = s.akun[e].uid;
     });
     segarkanSesi();
@@ -645,7 +651,7 @@ const demoMesin = {
     const d = await demo();
     const s = d.bacaDemo();
     return Object.entries(s.pengguna)
-      .map(([id, u]) => ({ id, ...u, diblokir: Boolean(s.blokir[id]), admin: Boolean(s.admin[id]) || ADMIN_UTAMA.includes(u.email) }))
+      .map(([id, u]) => ({ id, ...u, diblokir: Boolean(s.blokir[id]), admin: Boolean(s.admin[id]) || ADMIN_UTAMA.includes(u.email), utama: s.admin[id]?.utama === true || ADMIN_UTAMA.includes(u.email) }))
       .sort((a, b) => b.dibuat - a.dibuat);
   },
   async aturBlokir(uid, blokir) {
@@ -658,14 +664,14 @@ const demoMesin = {
     const d = await demo();
     return Object.entries(d.bacaDemo().admin).map(([id, a]) => ({ id, ...a }));
   },
-  async tambahAdmin(email) {
+  async tambahAdmin(email, jadikanUtama = false) {
     const p = wajibAdmin();
     const d = await demo();
     const e = email.trim().toLowerCase();
     const s = d.bacaDemo();
     const uid = s.akun[e]?.uid;
     if (!uid) throw galat('TIDAK_ADA', 'Belum ada akun dengan email itu. Minta yang bersangkutan mendaftar di situs dulu, lalu tambahkan lagi.');
-    d.ubahDemo((s) => (s.admin[uid] = { email: e, nama: s.pengguna[uid].nama, oleh: p.email, ditambahkan: Date.now() }));
+    d.ubahDemo((s) => (s.admin[uid] = { email: e, nama: s.pengguna[uid].nama, utama: Boolean(jadikanUtama), oleh: p.email, ditambahkan: Date.now() }));
   },
   async hapusAdmin(uid) {
     wajibAdmin();
