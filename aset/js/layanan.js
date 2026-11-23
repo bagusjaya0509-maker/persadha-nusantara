@@ -67,10 +67,14 @@ function fb() {
     const auth = A.getAuth(aplikasi);
     auth.languageCode = 'id';
     const db = F.getFirestore(aplikasi);
-    return { A, F, auth, db };
+    fbSiap = { A, F, auth, db };
+    return fbSiap;
   })();
   return fbJanji;
 }
+// Salinan sinkron sesudah SDK termuat: masukGoogle butuh membuka jendela Google TANPA menunggu apa pun,
+// karena Safari/Chrome di iPhone memblokir pop-up yang tidak dibuka langsung dari ketukan.
+let fbSiap = null;
 
 const keMs = (v) => (v && typeof v.toMillis === 'function' ? v.toMillis() : v);
 function rapikan(snap) {
@@ -137,11 +141,14 @@ const fbMesin = {
     }
     await fbMuatProfil(auth.currentUser);
   },
-  async masukGoogle() {
-    const { A, auth } = await fb();
+  // Sengaja BUKAN async dan tanpa await sebelum signInWithPopup (lihat fbSiap). Jangan diganti signInWithRedirect:
+  // authDomain *.firebaseapp.com beda dari domain situs, sehingga redirect gagal di iPhone ("missing initial state").
+  masukGoogle() {
+    if (!fbSiap) return fb().then(() => { throw galat('GOOGLE_BELUM_SIAP'); });
+    const { A, auth } = fbSiap;
     const p = new A.GoogleAuthProvider();
     p.setCustomParameters({ prompt: 'select_account' });
-    await A.signInWithPopup(auth, p);
+    return A.signInWithPopup(auth, p);
   },
   async keluar() {
     const { A, auth } = await fb();
