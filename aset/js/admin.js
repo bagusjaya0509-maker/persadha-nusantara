@@ -248,7 +248,7 @@ async function vKabar() {
   });
   $('[data-terbit-awal]')?.addEventListener('click', (e) => denganMemuat(e.currentTarget, async () => {
     try {
-      for (const k of awalBelum) await L.terbitkan({ ...k, sampul: '', sampulKecil: '', keteranganSampul: '' });
+      for (const k of awalBelum) await L.terbitkan({ ...k, sampul: k.sampul || '', sampulKecil: k.sampulKecil || '', keteranganSampul: k.keteranganSampul || '' });
       roti(`${awalBelum.length} kabar awal terbit.`, 'berhasil');
       vKabar();
     } catch (err) { roti(pesanGalat(err), 'galat'); }

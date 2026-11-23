@@ -440,6 +440,8 @@ details.bidang > ul { margin-top: 10px; }
 .prosa blockquote { margin: 1.6em 0; padding: 4px 0 4px 22px; border-left: 3px solid var(--prada); font-family: var(--f-judul); font-size: 1.3rem; line-height: 1.45; color: var(--anggur); }
 .prosa figure { margin: 1.6em 0; }
 .prosa figure img, .prosa img { border-radius: var(--radius); }
+/* paragraf miring tepat di bawah foto = keterangan foto */
+.prosa figure + p:has(> em:only-child) { margin-top: -0.9em; font-size: 0.88rem; line-height: 1.5; color: var(--tinta-2); }
 .prosa a { font-weight: 600; }
 
 .baca { padding-block: clamp(32px, 5vw, 56px) clamp(56px, 8vw, 96px); }

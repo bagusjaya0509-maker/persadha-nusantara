@@ -10,8 +10,8 @@ function kosong() {
   const s = { akun: {}, pengguna: {}, admin: {}, blokir: {}, kabar: {}, kabarIsi: {}, draf: {}, laporan: {}, tanggapan: {}, lampiran: {}, internal: {}, anggota: {}, sesi: null };
   for (const k of KABAR_AWAL) {
     const { delta, ...meta } = k;
-    s.kabar[k.slug] = { ...meta, sampulKecil: '', diubah: k.terbitPada };
-    s.kabarIsi[k.slug] = { delta, sampul: '', keteranganSampul: '', diubah: k.terbitPada };
+    s.kabar[k.slug] = { ...meta, sampulKecil: k.sampulKecil || '', diubah: k.terbitPada };
+    s.kabarIsi[k.slug] = { delta, sampul: k.sampul || '', keteranganSampul: k.keteranganSampul || '', diubah: k.terbitPada };
   }
   return s;
 }

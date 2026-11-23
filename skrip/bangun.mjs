@@ -286,9 +286,13 @@ let jumlahKabar = 0;
     if (!semua.length) {
       // Firebase belum diisi atau belum ada kabar terbit: pakai kabar awal dari dokumen legal.
       pakaiAwal = true;
+      globalThis.BASE_SITUS = BASE; // alamat foto kabar awal (aset/img/kabar/<slug>/) ikut awalan situs
       const { KABAR_AWAL } = await import(pathToFileURL(path.join(AKAR, 'aset/js/kabar-awal.js')));
       for (const { delta, ...k } of KABAR_AWAL) semua.push({ id: k.slug, ...k });
-      ambilIsi = async (slug) => ({ delta: KABAR_AWAL.find((k) => k.slug === slug).delta });
+      ambilIsi = async (slug) => {
+        const k = KABAR_AWAL.find((x) => x.slug === slug);
+        return { delta: k.delta, sampul: k.sampul || '', keteranganSampul: k.keteranganSampul || '' };
+      };
     }
     for (const kabar of semua) {
       const slug = kabar.id;

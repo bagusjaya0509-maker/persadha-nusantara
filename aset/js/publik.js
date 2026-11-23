@@ -8,6 +8,8 @@ import { KABAR_AWAL } from './kabar-awal.js';
 // kabar awal (disusun dari dokumen legal) supaya tidak kosong.
 const awal = () => KABAR_AWAL.map(({ delta, ...k }) => ({ id: k.slug, ...k })).sort((a, b) => b.terbitPada - a.terbitPada);
 
+const isiAwal = (k) => ({ delta: k.delta, sampul: k.sampul || '', keteranganSampul: k.keteranganSampul || '' });
+
 const fb = () => ({ projectId: KONFIG.firebase.projectId, apiKey: KONFIG.firebase.apiKey });
 
 // Selama koleksi kabar di Firestore masih kosong (pengurus belum menerbitkan
@@ -61,7 +63,7 @@ export async function ambilKabar(slug) {
   }
   if (MODE !== 'firebase') {
     const k = KABAR_AWAL.find((x) => x.slug === slug);
-    return k ? { kabar: awal().find((x) => x.id === slug), isi: { delta: k.delta } } : null;
+    return k ? { kabar: awal().find((x) => x.id === slug), isi: isiAwal(k) } : null;
   }
   const [kabar, isi] = await Promise.all([
     ambilDokumen({ ...fb(), jalur: `kabar/${slug}` }),
@@ -69,6 +71,6 @@ export async function ambilKabar(slug) {
   ]);
   if (kabar) return { kabar, isi: isi || {} };
   const k = KABAR_AWAL.find((x) => x.slug === slug);
-  if (k && (await firestoreKosong())) return { kabar: awal().find((x) => x.id === slug), isi: { delta: k.delta } };
+  if (k && (await firestoreKosong())) return { kabar: awal().find((x) => x.id === slug), isi: isiAwal(k) };
   return null;
 }
