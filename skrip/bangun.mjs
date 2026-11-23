@@ -381,4 +381,6 @@ await fs.writeFile(
   `User-agent: *\nDisallow: ${BASE}admin/\nDisallow: ${BASE}akun/\nDisallow: ${BASE}masuk/\nSitemap: ${ASAL}sitemap.xml\n`,
 );
 await fs.writeFile(path.join(KELUAR, '.nojekyll'), '');
+// IndexNow (Bing, Yandex): kunci ini publik; mesin pencari membacanya untuk memastikan pemilik situs.
+if (konfig.indexNow) await fs.writeFile(path.join(KELUAR, `${konfig.indexNow}.txt`), konfig.indexNow);
 console.log(`✓ Selesai → ${path.relative(AKAR, KELUAR)}/ (${peta.length} URL di sitemap)`);

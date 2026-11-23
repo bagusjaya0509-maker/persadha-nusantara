@@ -12,6 +12,8 @@ const wib = (t) => Date.parse(t + 'T09:00:00+07:00');
 const pp = (...potong) => [...potong.map((s) => (typeof s === 'string' ? { insert: s } : s)), { insert: '\n' }];
 const tautan = (teks, link) => ({ insert: teks, attributes: { link } });
 const miring = (teks) => ({ insert: teks, attributes: { italic: true } });
+const tebal = (teks) => ({ insert: teks, attributes: { bold: true } });
+const lis = (...potong) => [...potong.map((s) => (typeof s === 'string' ? { insert: s } : s)), { insert: '\n', attributes: { list: 'bullet' } }];
 const gambar = (src, alt) => [{ insert: { image: src }, attributes: { alt } }, { insert: '\n' }];
 
 // Foto kabar awal ada di aset/img/kabar/<slug>/. Awalan situs dibaca dari <html data-base> di peramban,
@@ -20,6 +22,8 @@ const BASE_AWAL = (typeof document !== 'undefined' && document.documentElement.d
 const media = (slug, berkas) => `${BASE_AWAL}aset/img/kabar/${slug}/${berkas}`;
 
 const PELANTIKAN = 'pengurus-dpd-persadha-nusantara-ntb-dilantik-siap-kawal-advokasi-umat';
+const DPP_NTB = 'dpp-tetapkan-pengurus-dpd-persadha-nusantara-ntb-2026-2031';
+const KEMENKUM = 'kemenkum-sahkan-susunan-pengurus-persadha-nusantara-2025-2030';
 
 export const KABAR_AWAL = [
   // 23 Nov 2026: dikembangkan dari pemberitaan Nusantara Satu (21/8/2026) & Filter News (22/8/2026),
@@ -58,16 +62,25 @@ export const KABAR_AWAL = [
       pp(miring('Diolah dari pemberitaan '), tautan('Nusantara Satu', 'https://nusantarasatu.com/2026/08/21/tanamkan-integritas-dan-kepemimpinan-berkualitas-pengurus-baru-persadha-nusantara-ntb-resmi-mengabdi/'), miring(' (21 Agustus 2026) dan '), tautan('Filter News', 'https://filter-news.com/tanamkan-integritas-dan-kepemimpinan-berkualitas-pengurus-baru-persadha-nusantara-ntb-resmi-mengabdi'), miring(' (22 Agustus 2026).')),
     ),
   },
+  // 23 Nov 2026: ditulis ulang lebih bercerita (pemilik), fakta tetap dari SK DPP No. 04 dan halaman Tentang.
   {
-    slug: 'dpp-tetapkan-pengurus-dpd-persadha-nusantara-ntb-2026-2031',
-    judul: 'DPP Tetapkan Pengurus DPD Persadha Nusantara NTB Masa Bhakti 2026–2031',
+    slug: DPP_NTB,
+    judul: 'DPP Tetapkan 35 Pengurus DPD Persadha Nusantara NTB Masa Bhakti 2026–2031',
     kategori: 'Berita',
     penulis: 'Sekretariat DPD NTB',
     terbitPada: wib('2026-08-20'),
-    ringkasan: 'SK DPP Nomor 04/SK/DPP PERSADHA NUSANTARA/VIII/2026 mengesahkan pengurus DPD Provinsi Nusa Tenggara Barat yang diketuai I Putu Alit Arsana, S.H., M.Kn.',
+    ringkasan: 'Lewat SK Nomor 04/SK/DPP PERSADHA NUSANTARA/VIII/2026, DPP menetapkan 35 pengurus DPD Provinsi NTB yang diketuai I Putu Alit Arsana, S.H., M.Kn. Mereka akan bekerja lewat enam bidang selama lima tahun ke depan.',
+    sampul: media(DPP_NTB, 'sampul.jpg'),
+    sampulKecil: media(DPP_NTB, 'sampul-kecil.jpg'),
+    keteranganSampul: 'Jajaran pengurus DPD Persadha Nusantara NTB masa bhakti 2026–2031 saat pelantikan di Mataram, 21 Agustus 2026.',
     delta: jadi(
-      p('Dewan Pimpinan Pusat Persadha Nusantara mengesahkan susunan pengurus Dewan Pimpinan Daerah Provinsi Nusa Tenggara Barat untuk masa bhakti 2026–2031. Pengesahan itu tertuang dalam Surat Keputusan Nomor 04/SK/DPP PERSADHA NUSANTARA/VIII/2026 yang ditetapkan di Jakarta pada 20 Agustus 2026 dan ditandatangani Ketua Umum DPP, D. Sures Kumar, S.Ag., M.Si.'),
-      p('Susunan pengurus disusun dalam rapat pada 18 Agustus 2026 berdasarkan Surat Mandat DPP Nomor 001/SM/DPP PERSADHA Nusantara/VIII/2026. Kepengurusan ini berlaku sampai Agustus 2031. Sesudahnya, DPD NTB wajib menggelar pemilihan kembali.'),
+      p('Umat Hindu di Nusa Tenggara Barat kini memiliki wadah pergerakan di tingkat provinsi. Dewan Pimpinan Pusat (DPP) Persadha Nusantara menetapkan susunan pengurus Dewan Pimpinan Daerah (DPD) Provinsi NTB masa bhakti 2026–2031 melalui Surat Keputusan Nomor 04/SK/DPP PERSADHA NUSANTARA/VIII/2026. SK itu ditetapkan di Jakarta pada 20 Agustus 2026 dan ditandatangani Ketua Umum DPP, D. Sures Kumar, S.Ag., M.Si.'),
+      p('Sebanyak 35 orang tercantum dalam susunan tersebut: tujuh pengurus harian, tujuh anggota Dewan Penasihat dan Pengawas, serta 21 orang yang tersebar di enam bidang kerja. Kepengurusan ini berlaku sampai Agustus 2031. Sesudahnya, DPD NTB wajib menggelar pemilihan kembali.'),
+      h2('Dari mandat ke pelantikan dalam empat hari'),
+      p('Penetapan ini berawal dari Surat Mandat DPP Nomor 001/SM/DPP PERSADHA Nusantara/VIII/2026. Prosesnya berlangsung cepat:'),
+      li('18 Agustus 2026: rapat penyusunan pengurus DPD NTB digelar berdasarkan surat mandat DPP.'),
+      li('20 Agustus 2026: DPP mengesahkan hasil rapat melalui SK Nomor 04.'),
+      lis('21 Agustus 2026: pengurus ', tautan('dilantik di Fizz Hotel Mataram', `${BASE_AWAL}kabar/${PELANTIKAN}/`), ' dengan tema “Meneguhkan Arah, Memperluas Gerak”.'),
       h2('Pengurus harian'),
       li('Ketua: I Putu Alit Arsana, S.H., M.Kn.'),
       li('Wakil Ketua I: Ida Bagus Benny Surya Adi Pramana, M.I.Kom.'),
@@ -77,33 +90,54 @@ export const KABAR_AWAL = [
       li('Bendahara: Komang Agus Alit Putra, S.M.'),
       li('Wakil Bendahara: I Gede Pasek Artana, S.H.'),
       p('Dewan Penasihat dan Pengawas diketuai Nyoman Widhiarsana, S.T., bersama enam anggota.'),
-      h2('Enam bidang kerja'),
-      li('Organisasi, Keanggotaan, dan Kaderisasi — koordinator Putu Witendra Mahardika, S.Pd.H.'),
-      li('Sosial Ekonomi — koordinator I Ketut Kasih Adnyana, S.TP.'),
-      li('Penelitian dan Pengembangan — koordinator I Gede Wira Aditya Tanaya, S.I.Kom.'),
-      li('Agama, Budaya, dan Lingkungan — koordinator Ida Bagus Ary Siswantara, S.H., M.I.Kom.'),
-      li('Hubungan Masyarakat dan Antarlembaga Hindu — koordinator I Wayan Sutawa, S.Pd., S.H., M.I.Kom.'),
-      li('Pergerakan Sosial Politik, Hukum, dan Advokasi — koordinator I Made Agus Artana, S.H., M.H.'),
-      p('Susunan lengkap pengurus, termasuk anggota tiap bidang, tercantum di halaman Tentang.'),
+      h2('Enam bidang, enam pintu pengabdian'),
+      p('Setiap bidang dipimpin seorang koordinator dan membawa fokus kerjanya sendiri:'),
+      lis(tebal('Organisasi, Keanggotaan, dan Kaderisasi'), ' (Putu Witendra Mahardika, S.Pd.H.): pendataan anggota, pelatihan kader muda, dan kepemimpinan di kabupaten dan kota.'),
+      lis(tebal('Sosial Ekonomi'), ' (I Ketut Kasih Adnyana, S.TP.): penguatan UMKM umat Hindu, pelatihan kewirausahaan, serta bakti sosial dan tanggap bencana.'),
+      lis(tebal('Penelitian dan Pengembangan'), ' (I Gede Wira Aditya Tanaya, S.I.Kom.): riset sosial-keagamaan, kajian hukum dan kelembagaan Hindu, serta literasi digital.'),
+      lis(tebal('Agama, Budaya, dan Lingkungan'), ' (Ida Bagus Ary Siswantara, S.H., M.I.Kom.): pelestarian tradisi Hindu Nusantara, dokumentasi warisan budaya, dan gerakan pelestarian lingkungan.'),
+      lis(tebal('Hubungan Masyarakat dan Antarlembaga Hindu'), ' (I Wayan Sutawa, S.Pd., S.H., M.I.Kom.): media dan publikasi organisasi, kerja sama dengan lembaga Hindu, serta dialog lintas agama.'),
+      lis(tebal('Pergerakan Sosial Politik, Hukum, dan Advokasi'), ' (I Made Agus Artana, S.H., M.H.): pendampingan hukum lewat layanan pengaduan, rekomendasi kebijakan untuk pemerintah daerah, dan forum diskusi kebijakan publik.'),
+      h2('Apa artinya bagi umat'),
+      p('Dengan terbentuknya DPD NTB, umat Hindu dari Lombok sampai Sumbawa memiliki saluran resmi untuk menyampaikan persoalan dan gagasan. Melalui situs ini, umat dapat:'),
+      lis('Melaporkan persoalan seperti hambatan beribadah atau sengketa tanah pura lewat ', tautan('layanan pengaduan', `${BASE_AWAL}layanan/aduan/`), '.'),
+      lis('Menyampaikan usulan dan kritik kepada pengurus lewat ', tautan('layanan aspirasi', `${BASE_AWAL}layanan/aspirasi/`), '.'),
+      lis('Mendaftar sebagai anggota dan memilih bidang yang ingin diikuti lewat ', tautan('layanan keanggotaan', `${BASE_AWAL}layanan/anggota/`), '.'),
+      pp('Susunan lengkap pengurus, termasuk anggota tiap bidang, dapat dibaca di ', tautan('halaman Tentang', `${BASE_AWAL}tentang/#pengurus`), '.'),
     ),
   },
+  // 23 Nov 2026: ditulis ulang (pemilik), sampul = ilustrasi buatan sendiri (skrip/ilustrasi-kemenkum.html).
   {
-    slug: 'kemenkum-sahkan-susunan-pengurus-persadha-nusantara-2025-2030',
-    judul: 'Kemenkum Sahkan Susunan Pengurus DPP Persadha Nusantara 2025–2030',
+    slug: KEMENKUM,
+    judul: 'Kemenkum Sahkan Kepengurusan Baru DPP Persadha Nusantara, Sekretariat Pusat Pindah ke Jakarta',
     kategori: 'Berita',
     penulis: 'Sekretariat DPD NTB',
     terbitPada: wib('2025-12-08'),
-    ringkasan: 'Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025 menyetujui perubahan perkumpulan, termasuk kepengurusan pusat yang dipimpin D Sures Kumar.',
+    ringkasan: 'Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025 mengesahkan kepengurusan DPP masa bhakti 2025–2030 di bawah Ketua Umum D. Sures Kumar sekaligus perpindahan sekretariat pusat dari Denpasar ke Jakarta Selatan.',
+    sampul: media(KEMENKUM, 'sampul.jpg'),
+    sampulKecil: media(KEMENKUM, 'sampul-kecil.jpg'),
+    keteranganSampul: 'Ilustrasi: pengesahan perubahan perkumpulan oleh Menteri Hukum, 8 Desember 2025.',
     delta: jadi(
-      p('Menteri Hukum menyetujui perubahan Perkumpulan Pergerakan Sanatana Dharma Nusantara (Persadha Nusantara) pada 8 Desember 2025. Persetujuan itu tertuang dalam Keputusan Menteri Hukum Nomor AHU-0002242.AH.01.08.TAHUN 2025. Keputusan ini menjadi dasar hukum bagi Dewan Pimpinan Pusat yang kemudian membentuk kepengurusan di daerah, termasuk DPD Nusa Tenggara Barat.'),
-      p('Rapat Pengurus pada 29 November 2025 memilih kepengurusan DPP masa bhakti 2025–2030 dan memindahkan sekretariat pusat dari Denpasar ke Jakarta Selatan. Keputusan rapat dituangkan dalam Akta Nomor 01 tanggal 4 Desember 2025 di hadapan Notaris Siti Susyanthi, S.H., M.Kn.'),
+      p('Persadha Nusantara memasuki babak baru. Pada 8 Desember 2025, Menteri Hukum menyetujui perubahan Perkumpulan Pergerakan Sanatana Dharma Nusantara (Persadha Nusantara) melalui Keputusan Nomor AHU-0002242.AH.01.08.TAHUN 2025. Persetujuan ini mengesahkan kepengurusan Dewan Pimpinan Pusat (DPP) masa bhakti 2025–2030 sekaligus perpindahan sekretariat pusat dari Denpasar ke Jakarta Selatan.'),
+      h2('Dari rapat pengurus ke keputusan menteri'),
+      p('Perubahan itu diputuskan dalam Rapat Pengurus pada 29 November 2025. Hasil rapat dituangkan dalam Akta Nomor 01 tanggal 4 Desember 2025 yang dibuat di hadapan Notaris Siti Susyanthi, S.H., M.Kn. Empat hari kemudian, Menteri Hukum menerbitkan persetujuannya.'),
+      p('Sejak itu, sekretariat DPP beralamat di Jl. Sawah Lunto No. 50, Pasar Manggis, Setiabudi, Jakarta Selatan.'),
       h2('Pengurus DPP 2025–2030'),
-      li('Ketua Umum: D Sures Kumar'),
+      li('Ketua Umum: D. Sures Kumar, S.Ag., M.Si.'),
       li('Wakil Ketua Umum: Gede Suardana'),
       li('Sekretaris Jenderal: Anak Agung Ayu Ari Widhyasari, S.H., M.Kn.'),
       li('Bendahara Umum: Komang Juli Agustawan'),
       li('Wakil Ketua: I Gede Ariawan, Yan Mitha Djaksana, I Made Sudanayasa, dan I Made Bawayasa'),
       li('Pengawas: Gede Pasek Suardika, S.H., M.H., I Wayan Jondra, dan I Ketut Wiriana'),
+      h2('Jejak legalitas Persadha Nusantara'),
+      li('28 Desember 2018: Persadha Nusantara didirikan di Denpasar dengan Akta Nomor 15 di hadapan Notaris I Wayan Gede Darma Yuda, S.H., M.Kn.'),
+      li('2 Januari 2019: Menteri Hukum dan HAM mengesahkan pendirian perkumpulan lewat Surat Keputusan AHU-0016053.AH.01.07.TAHUN 2018.'),
+      li('29 November 2025: Rapat Pengurus memilih kepengurusan DPP 2025–2030 dan memindahkan sekretariat pusat ke Jakarta Selatan.'),
+      li('8 Desember 2025: Menteri Hukum menyetujui perubahan perkumpulan lewat Keputusan AHU-0002242.AH.01.08.TAHUN 2025.'),
+      lis('20 Agustus 2026: DPP ', tautan('menetapkan pengurus DPD Provinsi NTB', `${BASE_AWAL}kabar/${DPP_NTB}/`), ' masa bhakti 2026–2031.'),
+      h2('Mengapa penting bagi DPD NTB'),
+      p('Keputusan Menteri Hukum ini menjadi dasar hukum bagi DPP untuk membentuk kepengurusan di daerah. Atas dasar itulah DPP menetapkan pengurus DPD Provinsi Nusa Tenggara Barat pada Agustus 2026. Setiap langkah DPD NTB dalam mendampingi umat berpijak pada legalitas organisasi yang sah dan tercatat di negara.'),
+      pp('Rincian dokumen legal organisasi dapat dilihat di ', tautan('halaman Tentang', `${BASE_AWAL}tentang/#legalitas`), '.'),
     ),
   },
 ];
