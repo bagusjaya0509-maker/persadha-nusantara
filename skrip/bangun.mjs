@@ -381,6 +381,8 @@ await fs.writeFile(
   `User-agent: *\nDisallow: ${BASE}admin/\nDisallow: ${BASE}akun/\nDisallow: ${BASE}masuk/\nSitemap: ${ASAL}sitemap.xml\n`,
 );
 await fs.writeFile(path.join(KELUAR, '.nojekyll'), '');
+// Google & perayap lain mencari /favicon.ico di akar domain; ikon hasil pencarian butuh kelipatan 48 px.
+await fs.copyFile(path.join(AKAR, 'aset/img/favicon.ico'), path.join(KELUAR, 'favicon.ico'));
 // IndexNow (Bing, Yandex): kunci ini publik; mesin pencari membacanya untuk memastikan pemilik situs.
 if (konfig.indexNow) await fs.writeFile(path.join(KELUAR, `${konfig.indexNow}.txt`), konfig.indexNow);
 console.log(`✓ Selesai → ${path.relative(AKAR, KELUAR)}/ (${peta.length} URL di sitemap)`);
