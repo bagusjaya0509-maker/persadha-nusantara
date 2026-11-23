@@ -22,8 +22,14 @@ service cloud.firestore {
       return masuk() && request.auth.token.email_verified == true
         && request.auth.token.email.lower() in ['persadhanusantarantb@gmail.com'];
     }
+    // Undangan pengurus lewat email (undangan/{email huruf kecil}): berlaku begitu pemilik email masuk
+    // dengan email terverifikasi, tanpa perlu menunggu dokumen admin/{uid} dibuat.
+    function diundang() {
+      return masuk() && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/undangan/$(request.auth.token.email.lower()));
+    }
     function pengurus() {
-      return adminUtama() || (masuk() && exists(/databases/$(database)/documents/admin/$(saya())));
+      return adminUtama() || diundang() || (masuk() && exists(/databases/$(database)/documents/admin/$(saya())));
     }
     // Pengurus utama: email di adminUtama ATAU dokumen admin/{uid} dengan utama == true.
     // Hanya pengurus utama yang boleh menurunkan/menghapus kabar dan mengatur daftar pengurus.
@@ -76,6 +82,11 @@ service cloud.firestore {
     // ---------- pengurus & blokir ----------
     match /admin/{id} {
       allow get: if masuk() && (saya() == id || pengurus());
+      allow list: if pengurus();
+      allow write: if utama();
+    }
+    match /undangan/{email} {
+      allow get: if masuk() && (request.auth.token.email.lower() == email || pengurus());
       allow list: if pengurus();
       allow write: if utama();
     }

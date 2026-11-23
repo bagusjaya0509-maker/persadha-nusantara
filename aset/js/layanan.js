@@ -96,7 +96,9 @@ async function fbMuatProfil(u) {
       const email = (u.email || '').toLowerCase();
       const viaEmail = ADMIN_UTAMA.includes(email) && u.emailVerified;
       const snapAdmin = await F.getDoc(F.doc(db, 'admin', u.uid)).catch(() => null);
-      const admin = viaEmail || snapAdmin?.exists() || false;
+      const diundang = !viaEmail && !snapAdmin?.exists() && u.emailVerified
+        ? (await F.getDoc(F.doc(db, 'undangan', email)).catch(() => null))?.exists() || false : false;
+      const admin = viaEmail || snapAdmin?.exists() || diundang;
       // Pengurus utama boleh menurunkan/menghapus kabar dan mengatur pengurus (dijaga juga oleh firestore.rules).
       const utama = viaEmail || snapAdmin?.data()?.utama === true;
       const ref = F.doc(db, 'pengguna', u.uid);
@@ -339,13 +341,31 @@ const fbMesin = {
     const s = await F.getDocs(F.collection(db, 'admin'));
     return s.docs.map(rapikan);
   },
+  // Mengembalikan 'akun' bila akunnya sudah ada (langsung jadi pengurus), atau 'undangan' bila belum mendaftar:
+  // email dicatat di undangan/{email} dan otomatis berlaku saat pemiliknya masuk (email terverifikasi).
   async tambahAdmin(email, jadikanUtama = false) {
     const p = wajibAdmin();
     const { F, db } = await fb();
-    const s = await F.getDocs(F.query(F.collection(db, 'pengguna'), F.where('email', '==', email.trim().toLowerCase())));
-    if (s.empty) throw galat('TIDAK_ADA', 'Belum ada akun dengan email itu. Minta yang bersangkutan mendaftar di situs dulu, lalu tambahkan lagi.');
+    const e = email.trim().toLowerCase();
+    const s = await F.getDocs(F.query(F.collection(db, 'pengguna'), F.where('email', '==', e)));
+    if (s.empty) {
+      await F.setDoc(F.doc(db, 'undangan', e), { email: e, utama: Boolean(jadikanUtama), oleh: p.email, ditambahkan: F.serverTimestamp() });
+      return 'undangan';
+    }
     const u = s.docs[0];
     await F.setDoc(F.doc(db, 'admin', u.id), { email: u.data().email, nama: u.data().nama, utama: Boolean(jadikanUtama), oleh: p.email, ditambahkan: F.serverTimestamp() });
+    return 'akun';
+  },
+  async daftarUndangan() {
+    wajibAdmin();
+    const { F, db } = await fb();
+    const s = await F.getDocs(F.collection(db, 'undangan'));
+    return s.docs.map(rapikan);
+  },
+  async hapusUndangan(email) {
+    wajibAdmin();
+    const { F, db } = await fb();
+    await F.deleteDoc(F.doc(db, 'undangan', email));
   },
   async hapusAdmin(uid) {
     wajibAdmin();
@@ -664,6 +684,8 @@ const demoMesin = {
     const d = await demo();
     return Object.entries(d.bacaDemo().admin).map(([id, a]) => ({ id, ...a }));
   },
+  async daftarUndangan() { return []; },
+  async hapusUndangan() {},
   async tambahAdmin(email, jadikanUtama = false) {
     const p = wajibAdmin();
     const d = await demo();

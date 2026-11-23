@@ -782,7 +782,7 @@ function detailAnggota(a) {
 // ======================================================================
 async function vPengguna() {
   setJudul('Pengguna & pengurus');
-  const [pengguna, admin] = await Promise.all([L.semuaPengguna(), L.daftarAdmin()]);
+  const [pengguna, admin, undangan] = await Promise.all([L.semuaPengguna(), L.daftarAdmin(), L.daftarUndangan().catch(() => [])]);
   aksi.innerHTML = `<button class="tombol tombol-utama kecil" type="button" data-unduh>${ikon('file-spreadsheet')}Unduh Excel</button>`;
   const utama = (KONFIG.adminUtama || []);
   isi.innerHTML = `
@@ -791,9 +791,10 @@ async function vPengguna() {
       <ul class="adm-daftar-admin">
         ${utama.map((e) => `<li><span><b>${esc(e)}</b><small>Pengurus utama (diatur di konfigurasi situs)</small></span></li>`).join('')}
         ${admin.filter((a) => !utama.includes(a.email)).map((a) => `<li><span><b>${esc(a.nama || a.email)}</b><small>${a.utama ? '<b>Pengurus utama</b> · ' : 'Pengurus · '}${esc(a.email)} · ditambahkan ${esc(tanggalPendek(a.ditambahkan))}${a.oleh ? ` oleh ${esc(a.oleh)}` : ''}</small></span>${a.id === saya.uid ? '<span class="status">Anda</span>' : saya.utama ? `<button class="tombol tombol-hapus kecil" type="button" data-cabut="${a.id}">Cabut akses</button>` : ''}</li>`).join('')}
+        ${undangan.map((u) => `<li><span><b>${esc(u.email)}</b><small>${u.utama ? '<b>Pengurus utama</b>' : 'Pengurus'} · undangan, berlaku saat email ini pertama kali masuk${u.oleh ? ` · oleh ${esc(u.oleh)}` : ''}</small></span>${saya.utama ? `<button class="tombol tombol-hapus kecil" type="button" data-batal-undangan="${esc(u.id)}">Batalkan</button>` : ''}</li>`).join('')}
       </ul>
       ${saya.utama ? `<form class="adm-tambah-admin" data-tambah-admin>
-        <div class="medan"><label for="ta-email">Tambah pengurus</label><input id="ta-email" name="email" type="email" required placeholder="email@contoh.com"><p class="petunjuk">Orangnya harus sudah membuat akun di situs ini. Untuk mengubah peran pengurus yang sudah ada, tambahkan lagi emailnya dengan pilihan yang baru.</p></div>
+        <div class="medan"><label for="ta-email">Tambah pengurus</label><input id="ta-email" name="email" type="email" required placeholder="email@contoh.com"><p class="petunjuk">Bila orangnya belum punya akun, email ini dicatat sebagai undangan dan otomatis menjadi pengurus saat ia pertama kali masuk dengan email tersebut. Untuk mengubah peran pengurus yang sudah ada, tambahkan lagi emailnya dengan pilihan yang baru.</p></div>
         <label class="centang"><input type="checkbox" name="utama"><span><b>Jadikan pengurus utama</b><br><small>Boleh menurunkan dan menghapus kabar serta mengatur pengurus. Pengurus biasa hanya bisa menulis dan menerbitkan kabar.</small></span></label>
         <button class="tombol tombol-utama" type="submit">${ikon('user-check')}Beri akses</button>
       </form>` : '<p class="petunjuk">Hanya pengurus utama yang dapat menambah atau mencabut akses pengurus.</p>'}
@@ -822,12 +823,16 @@ async function vPengguna() {
     if (!confirm('Cabut akses panel pengurus untuk akun ini?')) return;
     denganMemuat(b, async () => { try { await L.hapusAdmin(b.dataset.cabut); roti('Akses dicabut.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
   }));
+  $('[data-batal-undangan]').forEach((b) => b.addEventListener('click', () => {
+    if (!confirm('Batalkan undangan pengurus untuk email ini?')) return;
+    denganMemuat(b, async () => { try { await L.hapusUndangan(b.dataset.batalUndangan); roti('Undangan dibatalkan.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
+  }));
   $('[data-tambah-admin]')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const f = e.currentTarget;
     const jadiUtama = f.utama.checked;
     if (jadiUtama && !confirm(`Jadikan ${f.email.value} pengurus utama? Akun ini akan bisa menurunkan dan menghapus kabar serta mengatur pengurus lain.`)) return;
-    denganMemuat($('[type=submit]', f), async () => { try { await L.tambahAdmin(f.email.value, jadiUtama); roti(jadiUtama ? 'Akses pengurus utama diberikan.' : 'Akses pengurus diberikan.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
+    denganMemuat($('[type=submit]', f), async () => { try { const hasil = await L.tambahAdmin(f.email.value, jadiUtama); roti(hasil === 'undangan' ? 'Undangan tersimpan. Email ini menjadi pengurus saat pertama kali masuk.' : jadiUtama ? 'Akses pengurus utama diberikan.' : 'Akses pengurus diberikan.', 'berhasil'); vPengguna(); } catch (err) { roti(pesanGalat(err), 'galat'); } });
   });
   $('[data-unduh]').addEventListener('click', () => unduhBlob(buatXlsx([{ nama: 'Pengguna', kolom: ['Nama', 'Email', 'WhatsApp', 'Provinsi', 'Kab/Kota', 'Daftar', 'Pengurus', 'Diblokir'].map((judul) => ({ judul, lebar: 24 })), baris: pengguna.map((u) => [u.nama, u.email, u.wa || '', u.provinsi || '', u.kota || '', tanggalJam(u.dibuat), u.admin ? 'Ya' : '', u.diblokir ? 'Ya' : '']) }]), `pengguna-persadha-${new Date().toISOString().slice(0, 10)}.xlsx`));
 }
