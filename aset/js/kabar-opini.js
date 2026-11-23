@@ -5,11 +5,6 @@
 
 const BASE = (typeof document !== 'undefined' && document.documentElement.dataset.base) || globalThis.BASE_SITUS || '/';
 const media = (slug, berkas) => `${BASE}aset/img/kabar/${slug}/${berkas}`;
-// Opini yang fotonya sudah ada di aset/img/kabar/<slug>/. Yang belum memakai sampul gerbang bawaan (sampul kosong).
-// 23 Nov: Wikimedia memblokir unduhan (429); tambahkan slug ke sini begitu fotonya masuk.
-const ADA_FOTO = new Set(['opini-suara-umat-hindu-ntb-bukan-lumbung-suara-musiman']);
-const foto = (slug, berkas) => (ADA_FOTO.has(slug) ? media(slug, berkas) : '');
-const ket = (slug, teks) => (ADA_FOTO.has(slug) ? teks : '');
 const s = (x) => (typeof x === 'string' ? { insert: x } : x);
 const p = (...potong) => [...potong.map(s), { insert: '\n' }];
 const h2 = (teks) => [{ insert: teks }, { insert: '\n', attributes: { header: 2 } }];
@@ -32,6 +27,13 @@ const S4 = 'opini-ogoh-ogoh-di-bulan-ramadan-toleransi-harus-dua-arah';
 const S5 = 'opini-suara-umat-hindu-ntb-bukan-lumbung-suara-musiman';
 const S6 = 'opini-sawah-menyusut-tri-hita-karana-dipertaruhkan';
 const S7 = 'opini-penyuluh-agama-hindu-garda-depan-yang-dibayar-setengah-hati';
+// Opini yang fotonya sudah ada di aset/img/kabar/<slug>/. Yang belum memakai sampul gerbang bawaan (sampul kosong).
+// 23 Nov: Wikimedia memblokir unduhan (429); tambahkan slug ke sini begitu fotonya masuk.
+const ADA_FOTO = new Set([S1, S2, S3, S4, S5, S6, S7]);
+// Foto arsip Pura Lingsar 1929 (Wikimedia) di dalam opini 3 belum terunduh; aktifkan bila berkasnya sudah ada.
+const FOTO_LINGSAR = false;
+const foto = (slug, berkas) => (ADA_FOTO.has(slug) ? media(slug, berkas) : '');
+const ket = (slug, teks) => (ADA_FOTO.has(slug) ? teks : '');
 
 export const KABAR_OPINI = [
   // ------------------------------------------------------------------ 1
@@ -43,7 +45,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Pembangunan pura di NTB berulang kali terhenti karena urusan izin. Rancangan Perpres Kerukunan masih mempertahankan syarat 90/60. Persadha Nusantara NTB meminta negara menjalankan kewajibannya memfasilitasi, bukan sekadar menunggu persetujuan.',
     sampul: foto(S1, 'sampul.jpg'),
     sampulKecil: foto(S1, 'sampul-kecil.jpg'),
-    keteranganSampul: ket(S1, 'Pura Meru, Cakranegara, Kota Mataram. Foto: David Stanley, CC BY 2.0, via Wikimedia Commons.'),
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('Di Nusa Tenggara Barat, kabar tentang pura yang batal dibangun bukan cerita baru. Pembangunan pura di Bayan pernah diminta berhenti karena panitia tidak dapat menunjukkan izin. Pada 2018, pembangunan Pura Awan Rinjani di Lombok Utara dihentikan setelah rapat FKUB dan Kesbangpol menilai persyaratan teknis dan administratif belum terpenuhi, termasuk status tanahnya. Di Dompu, sebuah pura di Desa Pancasila, Kecamatan Pekat, diprotes dan diminta ditinjau ulang izinnya.'),
       p('Setiap kasus punya duduk perkaranya sendiri, dan Persadha Nusantara tidak membela pembangunan yang menabrak aturan. Namun polanya terlalu jelas untuk diabaikan: bagi umat yang jumlahnya kecil, jalan menuju rumah ibadat selalu lebih panjang, lebih mahal, dan lebih bergantung pada kemurahan hati tetangga.'),
@@ -83,7 +85,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Di SDN 02 Labuhan Kananga, Tambora, seorang Bhabinkamtibmas mengisi kekosongan guru agama Hindu bagi 17 siswa. Kepedulian itu patut dihormati, tetapi tidak boleh menjadi pengganti kewajiban negara.',
     sampul: foto(S2, 'sampul.jpg'),
     sampulKecil: foto(S2, 'sampul-kecil.jpg'),
-    keteranganSampul: ket(S2, 'Ilustrasi: suasana SMPN 1 Maluk, Sumbawa Barat. Foto: Tdemonite, CC BY-SA 4.0, via Wikimedia Commons.'),
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('November 2026, seorang anggota Bhabinkamtibmas Polsek Tambora masuk ke kelas SDN 02 Labuhan Kananga, Kecamatan Tambora, Kabupaten Bima. Ia bukan datang untuk urusan keamanan, melainkan untuk mengajar pelajaran agama Hindu kepada 17 siswa yang selama ini tidak memiliki guru agama Hindu.'),
       p('Kami menghormati ketulusan petugas itu. Ia melakukan apa yang seharusnya dilakukan negara. Namun justru di situlah persoalannya: anak-anak Hindu di sekolah negeri tidak boleh menggantungkan pendidikan agamanya pada kebaikan hati seorang polisi.'),
@@ -122,11 +124,11 @@ export const KABAR_OPINI = [
     ringkasan: 'Dari 1.662 pura yang bersertifikat lewat program nasional hingga Oktober 2023, 1.359 berada di Bali. Persoalan aset Pura Lingsar menunjukkan betapa rentannya tanah pura di NTB. Sertifikasi kini gratis, dan umat harus menuntutnya.',
     sampul: foto(S3, 'sampul.jpg'),
     sampulKecil: foto(S3, 'sampul-kecil.jpg'),
-    keteranganSampul: ket(S3, 'Pura Suranadi, Lombok Barat. Foto: yeowatzup, CC BY 2.0, via Wikimedia Commons.'),
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('Banyak pura di Lombok berdiri di atas tanah yang diwariskan turun-temurun tanpa selembar sertifikat. Selama para tetua masih hidup, semua orang tahu tanah itu milik pura. Begitu generasi berganti, ingatan bersama tidak lagi cukup di hadapan hukum.'),
       p('Pura Lingsar, simbol kerukunan Hindu dan Sasak di Lombok Barat, menjadi pengingat paling keras. Pada 2022, Majelis Agung Windu Sesukertaning Jagat Lombok melaporkan dugaan penyelewengan aset pura seluas 18,4 hektare ke kepolisian. Pada November 2023, krama dari lima banjar mendatangi Bupati Lombok Barat karena merasa pengelolaan pura dan kegiatan Pujawali diambil alih sejak 2017. Kompleks Taman Lingsar yang dahulu sekitar empat hektare kini disebut tinggal separuhnya.'),
-      ...(ADA_FOTO.has(S3) ? [gambar(media(S3, 'lingsar-1929.jpg'), 'Umat membawa sesaji di Pura Lingsar pada tahun 1929'), p(miring('Umat membawa sesaji di Pura Lingsar, 1929. Foto: W.G.N. van der Sleen, koleksi Tropenmuseum, CC BY-SA 3.0, via Wikimedia Commons.'))] : []),
+      ...(FOTO_LINGSAR ? [gambar(media(S3, 'lingsar-1929.jpg'), 'Umat membawa sesaji di Pura Lingsar pada tahun 1929'), p(miring('Umat membawa sesaji di Pura Lingsar, 1929. Foto: W.G.N. van der Sleen, koleksi Tropenmuseum, CC BY-SA 3.0, via Wikimedia Commons.'))] : []),
       p('Kami tidak menghakimi siapa yang benar dalam perkara itu; itu wewenang aparat penegak hukum. Yang kami soroti adalah pelajarannya: aset pura yang tidak tercatat rapi dan tidak dikelola terbuka akan selalu menjadi sumber sengketa, baik dengan pihak luar maupun di antara umat sendiri.'),
       h2('Ketimpangan sertifikasi'),
       p('Program nasional sertifikasi rumah ibadah mencatat 1.662 pura telah bersertifikat hingga Oktober 2023, dan 1.359 di antaranya berada di Bali. Artinya, pura di luar Bali, termasuk di NTB, baru tersentuh sedikit. Di sisi lain, percepatan sertifikasi di NTB selama ini lebih banyak menyasar tanah wakaf dan masjid. Itu baik, tetapi umat Hindu NTB juga warga negara yang berhak atas perlakuan yang sama. Menteri ATR/BPN sendiri pada Agustus 2026 menegaskan sertifikasi rumah ibadah tidak dipungut biaya dan berlaku untuk pura.'),
@@ -161,7 +163,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Nyepi 2026 di Mataram berlangsung damai di tengah Ramadan, tetapi jumlah ogoh-ogoh turun dari 182 menjadi 105. Kesepakatan yang adil patut dihargai, asalkan tidak berubah menjadi pembatasan yang menetap.',
     sampul: foto(S4, 'sampul.jpg'),
     sampulKecil: foto(S4, 'sampul-kecil.jpg'),
-    keteranganSampul: ket(S4, 'Pawai ogoh-ogoh di Lombok, 10 Maret 2024. Foto: Didik Aryawiranata, CC BY-SA 4.0, via Wikimedia Commons.'),
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('Maret 2026 menghadirkan ujian langka bagi kerukunan di Mataram: Nyepi jatuh di tengah Ramadan, dan malam takbiran Idulfitri berdekatan dengan rangkaian Tawur Kesanga. Hasilnya patut disyukuri. Pawai ogoh-ogoh pada 18 Maret berlangsung tertib, ribuan warga lintas agama menonton, dan Gubernur NTB menyebutnya lancar, aman, dan damai tanpa gesekan.'),
       p('Keberhasilan itu lahir dari kesepakatan. Pawai dijadwalkan sejak pukul 12.00 WITA dan diupayakan selesai sebelum magrib, tanpa pengeras suara, tanpa senjata tajam, minuman keras, dan petasan. Peserta diatur melalui kesepakatan dengan FKUB. Pembatasan juga berlaku bagi saudara Muslim: pawai takbiran dibatasi di tingkat kecamatan, tanpa kendaraan roda tiga dan empat, dan berakhir pukul 22.00 WITA.'),
@@ -233,7 +235,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Lahan sawah dilindungi di Mataram tinggal sekitar 509 hektare dan terus tergerus perumahan. Bagi umat Hindu, sawah bukan sekadar lahan produksi, tetapi bagian dari ajaran palemahan. Persadha mendesak perlindungan nyata, bukan sekadar peta.',
     sampul: foto(S6, 'sampul.jpg'),
     sampulKecil: foto(S6, 'sampul-kecil.jpg'),
-    keteranganSampul: ket(S6, 'Sawah di Lombok. Foto: Lasthib, CC0, via Wikimedia Commons.'),
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('Di Mataram, sawah yang tersisa makin sempit. Luas lahan sawah dilindungi di kota ini sekitar 509 hektare, dan Komisi Pemberantasan Korupsi sampai ikut menyoroti penyusutannya. Penyebab utamanya perumahan dan perkantoran. Di Lombok Barat, pemerintah menetapkan 12.331 hektare lahan pertanian pangan berkelanjutan di sepuluh kecamatan, tetapi kawasan yang berbatasan dengan Mataram, seperti Labuapi, terus ditekan perluasan kota.'),
       p('Bagi umat Hindu di Lombok, berita ini menyentuh lebih dari sekadar urusan pangan. Banyak keluarga Hindu di Mataram dan Lombok Barat adalah petani dan anggota subak. Di sawah ada pura subak dan upacara yang mengikuti siklus tanam. Ketika sawah berganti perumahan, yang hilang bukan hanya padi, tetapi juga ruang hidup sebuah tradisi.'),
@@ -270,7 +272,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Di Kota Mataram, pembinaan umat Hindu banyak bertumpu pada 21 penyuluh non-PNS, dan kajian menyebut jumlah itu masih jauh dari kebutuhan. Honor mereka bertahun-tahun di kisaran Rp500 ribu per bulan. Negara tidak boleh membiarkan garda depan pembinaan umat bekerja dalam ketidakpastian.',
     sampul: foto(S7, 'sampul.jpg'),
     sampulKecil: foto(S7, 'sampul-kecil.jpg'),
-    keteranganSampul: ket(S7, 'Pura Suranadi, Lombok Barat. Foto: yeowatzup, CC BY 2.0, via Wikimedia Commons.'),
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('Ketika umat Hindu di sebuah banjar kecil membutuhkan pendampingan, entah untuk belajar sembahyang, menyiapkan upacara, menghadapi persoalan keluarga, atau sekadar ingin memahami ajaran agamanya, yang datang biasanya bukan pejabat, melainkan penyuluh agama. Merekalah garda depan pembinaan umat.'),
       p('Kajian tentang penyuluhan agama Hindu di Kota Mataram yang terbit di jurnal IAHN Gde Pudja Mataram mencatat bahwa keterbatasan penyuluh PNS membuat penyuluh non-PNS sangat penting, karena tidak semua wilayah dapat dijangkau. Kajian yang sama menyebut 21 penyuluh non-PNS di Mataram sangat membantu, tetapi jumlahnya masih jauh dari kebutuhan umat. Kajian itu juga mengaitkan tugas penyuluh dengan upaya mencegah umat meninggalkan agamanya karena tidak mendapat pembinaan.'),
