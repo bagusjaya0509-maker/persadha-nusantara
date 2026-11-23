@@ -2,6 +2,7 @@
 // NUSANTARA/VIII/2026 (pengurus DPD NTB) dan SK Menteri Hukum
 // AHU-0002242.AH.01.08.TAHUN 2025 (pengurus DPP). Mode demo memakainya sebagai
 // isi awal; di panel pengurus ada tombol untuk menerbitkannya ke Firebase.
+import { KABAR_OPINI } from './kabar-opini.js';
 
 const p = (teks, a) => [{ insert: teks, ...(a ? { attributes: a } : {}) }, { insert: '\n' }];
 const h2 = (teks) => [{ insert: teks }, { insert: '\n', attributes: { header: 2 } }];
@@ -140,4 +141,5 @@ export const KABAR_AWAL = [
       pp('Rincian dokumen legal organisasi dapat dilihat di ', tautan('halaman Tentang', `${BASE_AWAL}tentang/#legalitas`), '.'),
     ),
   },
+  ...KABAR_OPINI,
 ];
