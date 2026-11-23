@@ -85,7 +85,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Di SDN 02 Labuhan Kananga, Tambora, seorang Bhabinkamtibmas mengisi kekosongan guru agama Hindu bagi 17 siswa. Kepedulian itu patut dihormati, tetapi tidak boleh menjadi pengganti kewajiban negara.',
     sampul: foto(S2, 'sampul.jpg'),
     sampulKecil: foto(S2, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Siswa sekolah dasar berseragam merah putih. Foto: Nuril Ahsan, via Unsplash.',
+    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
     delta: jadi(
       p('November 2026, seorang anggota Bhabinkamtibmas Polsek Tambora masuk ke kelas SDN 02 Labuhan Kananga, Kecamatan Tambora, Kabupaten Bima. Ia bukan datang untuk urusan keamanan, melainkan untuk mengajar pelajaran agama Hindu kepada 17 siswa yang selama ini tidak memiliki guru agama Hindu.'),
       p('Kami menghormati ketulusan petugas itu. Ia melakukan apa yang seharusnya dilakukan negara. Namun justru di situlah persoalannya: anak-anak Hindu di sekolah negeri tidak boleh menggantungkan pendidikan agamanya pada kebaikan hati seorang polisi.'),
