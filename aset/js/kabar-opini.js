@@ -85,7 +85,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Di SDN 02 Labuhan Kananga, Tambora, seorang Bhabinkamtibmas mengisi kekosongan guru agama Hindu bagi 17 siswa. Kepedulian itu patut dihormati, tetapi tidak boleh menjadi pengganti kewajiban negara.',
     sampul: foto(S2, 'sampul.jpg'),
     sampulKecil: foto(S2, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
+    keteranganSampul: 'Siswa sekolah dasar berseragam merah putih. Foto: Nuril Ahsan, via Unsplash.',
     delta: jadi(
       p('November 2026, seorang anggota Bhabinkamtibmas Polsek Tambora masuk ke kelas SDN 02 Labuhan Kananga, Kecamatan Tambora, Kabupaten Bima. Ia bukan datang untuk urusan keamanan, melainkan untuk mengajar pelajaran agama Hindu kepada 17 siswa yang selama ini tidak memiliki guru agama Hindu.'),
       p('Kami menghormati ketulusan petugas itu. Ia melakukan apa yang seharusnya dilakukan negara. Namun justru di situlah persoalannya: anak-anak Hindu di sekolah negeri tidak boleh menggantungkan pendidikan agamanya pada kebaikan hati seorang polisi.'),
@@ -163,7 +163,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Nyepi 2026 di Mataram berlangsung damai di tengah Ramadan, tetapi jumlah ogoh-ogoh turun dari 182 menjadi 105. Kesepakatan yang adil patut dihargai, asalkan tidak berubah menjadi pembatasan yang menetap.',
     sampul: foto(S4, 'sampul.jpg'),
     sampulKecil: foto(S4, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
+    keteranganSampul: 'Ogoh-ogoh, patung raksasa yang diarak menjelang Nyepi. Foto: Eyestetix Studio, via Unsplash.',
     delta: jadi(
       p('Maret 2026 menghadirkan ujian langka bagi kerukunan di Mataram: Nyepi jatuh di tengah Ramadan, dan malam takbiran Idulfitri berdekatan dengan rangkaian Tawur Kesanga. Hasilnya patut disyukuri. Pawai ogoh-ogoh pada 18 Maret berlangsung tertib, ribuan warga lintas agama menonton, dan Gubernur NTB menyebutnya lancar, aman, dan damai tanpa gesekan.'),
       p('Keberhasilan itu lahir dari kesepakatan. Pawai dijadwalkan sejak pukul 12.00 WITA dan diupayakan selesai sebelum magrib, tanpa pengeras suara, tanpa senjata tajam, minuman keras, dan petasan. Peserta diatur melalui kesepakatan dengan FKUB. Pembatasan juga berlaku bagi saudara Muslim: pawai takbiran dibatasi di tingkat kecamatan, tanpa kendaraan roda tiga dan empat, dan berakhir pukul 22.00 WITA.'),
@@ -235,7 +235,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Lahan sawah dilindungi di Mataram tinggal sekitar 509 hektare dan terus tergerus perumahan. Bagi umat Hindu, sawah bukan sekadar lahan produksi, tetapi bagian dari ajaran palemahan. Persadha mendesak perlindungan nyata, bukan sekadar peta.',
     sampul: foto(S6, 'sampul.jpg'),
     sampulKecil: foto(S6, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
+    keteranganSampul: 'Sawah berlatar Gunung Rinjani, Lombok. Foto: Maximus Beaumont, via Unsplash.',
     delta: jadi(
       p('Di Mataram, sawah yang tersisa makin sempit. Luas lahan sawah dilindungi di kota ini sekitar 509 hektare, dan Komisi Pemberantasan Korupsi sampai ikut menyoroti penyusutannya. Penyebab utamanya perumahan dan perkantoran. Di Lombok Barat, pemerintah menetapkan 12.331 hektare lahan pertanian pangan berkelanjutan di sepuluh kecamatan, tetapi kawasan yang berbatasan dengan Mataram, seperti Labuapi, terus ditekan perluasan kota.'),
       p('Bagi umat Hindu di Lombok, berita ini menyentuh lebih dari sekadar urusan pangan. Banyak keluarga Hindu di Mataram dan Lombok Barat adalah petani dan anggota subak. Di sawah ada pura subak dan upacara yang mengikuti siklus tanam. Ketika sawah berganti perumahan, yang hilang bukan hanya padi, tetapi juga ruang hidup sebuah tradisi.'),
