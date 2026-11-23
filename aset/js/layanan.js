@@ -356,6 +356,16 @@ const fbMesin = {
     await F.setDoc(F.doc(db, 'admin', u.id), { email: u.data().email, nama: u.data().nama, utama: Boolean(jadikanUtama), oleh: p.email, ditambahkan: F.serverTimestamp() });
     return 'akun';
   },
+  // Statistik kunjungan (dicatat inti.js lewat REST): 60 hari terakhir + 10 halaman paling sering dilihat.
+  async statistikKunjungan() {
+    wajibAdmin();
+    const { F, db } = await fb();
+    const [h, p] = await Promise.all([
+      F.getDocs(F.query(F.collection(db, 'kunjungan'), F.orderBy(F.documentId(), 'desc'), F.limit(60))),
+      F.getDocs(F.query(F.collection(db, 'halamanDilihat'), F.orderBy('tayang', 'desc'), F.limit(10))),
+    ]);
+    return { harian: h.docs.map((d) => ({ hari: d.id, ...d.data() })), halaman: p.docs.map((d) => d.data()) };
+  },
   async daftarUndangan() {
     wajibAdmin();
     const { F, db } = await fb();
@@ -685,6 +695,7 @@ const demoMesin = {
     return Object.entries(d.bacaDemo().admin).map(([id, a]) => ({ id, ...a }));
   },
   async daftarUndangan() { return []; },
+  async statistikKunjungan() { return { harian: [], halaman: [] }; },
   async hapusUndangan() {},
   async tambahAdmin(email, jadikanUtama = false) {
     const p = wajibAdmin();

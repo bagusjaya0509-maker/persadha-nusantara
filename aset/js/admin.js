@@ -186,7 +186,22 @@ async function vRingkasan() {
   setJudul('Ringkasan');
   aksi.innerHTML = `<button class="tombol tombol-garis kecil" type="button" data-segarkan>${ikon('refresh-cw')}Muat ulang</button>`;
   $('[data-segarkan]').addEventListener('click', async () => { cache.laporan = cache.anggota = null; await segarkanLencana(); vRingkasan(); });
-  const [lap, ang, kabar] = await Promise.all([ambilLaporan(), ambilAnggota(), L.semuaKabarAdmin()]);
+  const [lap, ang, kabar, stat] = await Promise.all([ambilLaporan(), ambilAnggota(), L.semuaKabarAdmin(), L.statistikKunjungan().catch(() => ({ harian: [], halaman: [] }))]);
+  // Statistik pengunjung: hari dihitung dalam WITA, sama dengan pencatat di inti.js.
+  const tglWita = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Makassar' }).format(d);
+  const petaHari = new Map(stat.harian.map((h) => [h.hari, h]));
+  const hariKe = (mundur) => tglWita(new Date(Date.now() - mundur * 86400000));
+  const jumlah = (n, f) => Array.from({ length: n }, (_, i) => petaHari.get(hariKe(i))?.[f] || 0).reduce((a, b) => a + b, 0);
+  const grafikHarian = Array.from({ length: 14 }, (_, i) => {
+    const k = hariKe(13 - i);
+    return { label: new Date(`${k}T12:00:00+08:00`).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' }), nilai: petaHari.get(k)?.pengunjung || 0 };
+  });
+  const namaHalaman = (path) => {
+    if (path === '/' || !path) return 'Beranda';
+    const k = kabar.find((x) => path.includes(`/kabar/${x.slug}/`));
+    if (k) return k.judul;
+    return path.replace(/^\/|\/$/g, '').replace(/[-/]/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+  };
   const aduan = lap.filter((l) => l.jenis === 'aduan');
   const aspirasi = lap.filter((l) => l.jenis === 'aspirasi');
   const terbuka = (l) => !['selesai', 'ditutup'].includes(l.status);
@@ -201,7 +216,22 @@ async function vRingkasan() {
   const perhatian = lap.filter(perluPerhatian).sort((a, b) => (b.mendesak - a.mendesak) || (b.dibuat - a.dibuat)).slice(0, 8);
   isi.innerHTML = `
     <div class="adm-ubin">${ubin.map((u) => `<a class="ubin ${u.tanda && u.n ? 'ubin-tanda' : ''}" href="${u.href}"><span class="ubin-angka">${u.n}</span><span class="ubin-judul">${u.t}</span><span class="ubin-ket">${u.k}</span></a>`).join('')}</div>
-    ${!kabar.length ? `<div class="pesan" style="margin-top:20px">${ikon('newspaper')}<div><p><b>Belum ada kabar terbit.</b> Tiga kabar awal sudah disiapkan dari dokumen legal organisasi (SK Menteri Hukum, perpindahan sekretariat, dan NIB).</p><p><a href="#kabar">Buka menu Kabar untuk menerbitkannya</a></p></div></div>` : ''}
+    ${!kabar.length ? `<div class="pesan" style="margin-top:20px">${ikon('newspaper')}<div><p><b>Kabar di situs belum tersimpan di database panel.</b> ${KABAR_AWAL.length} kabar dan opini yang sekarang tampil di situs masih berupa kabar awal bawaan. Terbitkan sekali agar bisa disunting dan dihitung di panel.</p><p><a href="#kabar">Buka menu Kabar untuk menerbitkannya</a></p></div></div>` : ''}
+    <section class="adm-kartu" style="margin-top:20px">
+      <h2>Pengunjung situs</h2>
+      <div class="adm-ubin" style="margin:12px 0 18px">
+        ${[
+          { n: jumlah(1, 'pengunjung'), t: 'Hari ini', k: `${jumlah(1, 'tayang').toLocaleString('id-ID')} halaman dilihat` },
+          { n: jumlah(7, 'pengunjung'), t: '7 hari terakhir', k: `${jumlah(7, 'tayang').toLocaleString('id-ID')} halaman dilihat` },
+          { n: jumlah(30, 'pengunjung'), t: '30 hari terakhir', k: `${jumlah(30, 'tayang').toLocaleString('id-ID')} halaman dilihat` },
+        ].map((u) => `<div class="ubin"><span class="ubin-angka">${u.n.toLocaleString('id-ID')}</span><span class="ubin-judul">${u.t}</span><span class="ubin-ket">${u.k}</span></div>`).join('')}
+      </div>
+      <div class="adm-kisi-2" style="margin-top:0">
+        <div><h3 class="sub-judul" style="margin-top:0">Pengunjung 14 hari terakhir</h3>${grafikBatang(grafikHarian, { kosong: 'Statistik mulai dicatat sejak 23 November 2026. Angka akan muncul setelah ada kunjungan.', nol: true })}</div>
+        <div><h3 class="sub-judul" style="margin-top:0">Halaman paling sering dilihat</h3>${grafikBatang(stat.halaman.map((h) => ({ label: namaHalaman(h.path), nilai: h.tayang || 0 })), { kosong: 'Belum ada data halaman.' })}</div>
+      </div>
+      <p class="petunjuk" style="color:var(--tinta-2);margin-top:12px">Pengunjung dihitung per peramban per hari, tanpa menyimpan data pribadi. Kunjungan pengurus ke panel tidak dihitung.</p>
+    </section>
     <div class="adm-kisi-2">
       <section class="adm-kartu">
         <h2>Perlu perhatian</h2>
@@ -231,7 +261,7 @@ async function vKabar() {
   const daftar = await L.semuaKabarAdmin();
   const awalBelum = KABAR_AWAL.filter((k) => !daftar.some((d) => d.slug === k.slug));
   isi.innerHTML = `
-    ${awalBelum.length ? `<div class="pesan" style="margin-bottom:20px">${ikon('newspaper')}<div><p><b>${awalBelum.length} kabar awal siap terbit.</b> Disusun dari SK Menteri Hukum, Akta No. 01/2025, dan NIB: ${awalBelum.map((k) => `“${esc(k.judul)}”`).join(', ')}.</p><p style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="tombol tombol-utama kecil" type="button" data-terbit-awal>Terbitkan kabar awal</button><button class="tombol tombol-garis kecil" type="button" data-lihat-awal>Lihat isinya dulu</button></p></div></div>` : ''}
+    ${awalBelum.length ? `<div class="pesan" style="margin-bottom:20px">${ikon('newspaper')}<div><p><b>${awalBelum.length} kabar awal siap terbit.</b> Kabar dan opini ini sudah tampil di situs, tetapi belum tersimpan di database panel. Terbitkan sekali agar bisa disunting, diturunkan, dan dihitung di panel: ${awalBelum.map((k) => `“${esc(k.judul)}”`).join(', ')}.</p><p style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="tombol tombol-utama kecil" type="button" data-terbit-awal>Terbitkan kabar awal</button><button class="tombol tombol-garis kecil" type="button" data-lihat-awal>Lihat isinya dulu</button></p></div></div>` : ''}
     ${daftar.length ? `<div class="tabel-wadah"><table class="tabel adm-tabel">
       <thead><tr><th>Judul</th><th>Kategori</th><th>Status</th><th>Tanggal terbit</th><th>Diubah</th><th><span class="sr-only">Aksi</span></th></tr></thead>
       <tbody>${daftar.map((k) => `<tr>

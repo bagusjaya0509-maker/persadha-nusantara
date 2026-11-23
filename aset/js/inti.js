@@ -177,5 +177,30 @@ function pasangPitaDemo() {
   document.body.prepend(pita);
 }
 
+// Statistik kunjungan: hanya menambah hitungan harian & per halaman lewat REST (tanpa SDK, tanpa cookie,
+// tanpa data pribadi). "Pengunjung" = peramban unik per hari (penanda tanggal di localStorage).
+function catatKunjungan() {
+  try {
+    if (MODE !== 'firebase' || diLokal || navigator.webdriver) return;
+    if (document.body.dataset.halaman === 'admin' || /\/(admin|masuk|akun)\//.test(location.pathname)) return;
+    const { projectId: pid, apiKey } = KONFIG.firebase;
+    const hari = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Makassar' }).format(new Date());
+    let baru = 1;
+    try { baru = localStorage.getItem('pn.kunjungan') === hari ? 0 : 1; localStorage.setItem('pn.kunjungan', hari); } catch { /* mode privat */ }
+    const path = location.pathname.slice(BASE.length - 1) || '/';
+    const id = path.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) || 'beranda';
+    const akar = `projects/${pid}/databases/(default)/documents`;
+    const tambah = (fieldPath, n) => ({ fieldPath, increment: { integerValue: String(n) } });
+    fetch(`https://firestore.googleapis.com/v1/${akar}:commit?key=${apiKey}`, {
+      method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ writes: [
+        { transform: { document: `${akar}/kunjungan/${hari}`, fieldTransforms: [tambah('tayang', 1), tambah('pengunjung', baru)] } },
+        { update: { name: `${akar}/halamanDilihat/${id}`, fields: { path: { stringValue: path.slice(0, 200) } } }, updateMask: { fieldPaths: ['path'] }, updateTransforms: [tambah('tayang', 1)] },
+      ] }),
+    }).catch(() => {});
+  } catch { /* statistik tidak boleh mengganggu halaman */ }
+}
+
 pasangKepala();
 pasangPitaDemo();
+catatKunjungan();

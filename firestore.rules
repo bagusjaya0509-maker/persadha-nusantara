@@ -85,6 +85,29 @@ service cloud.firestore {
       allow list: if pengurus();
       allow write: if utama();
     }
+    // ---------- statistik kunjungan: hanya hitungan, tanpa data pribadi ----------
+    // Pengunjung (tanpa masuk) hanya boleh menambah angka tepat 1; pengurus yang boleh membaca.
+    match /kunjungan/{hari} {
+      allow read: if pengurus();
+      allow create: if hari.matches('^20[0-9]{2}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.keys().hasOnly(['tayang', 'pengunjung'])
+        && request.resource.data.tayang == 1 && request.resource.data.get('pengunjung', 0) in [0, 1];
+      allow update: if request.resource.data.keys().hasOnly(['tayang', 'pengunjung'])
+        && request.resource.data.tayang == resource.data.tayang + 1
+        && request.resource.data.get('pengunjung', 0) - resource.data.get('pengunjung', 0) in [0, 1];
+      allow delete: if false;
+    }
+    match /halamanDilihat/{id} {
+      allow read: if pengurus();
+      allow create: if id.matches('^[a-z0-9-]{1,120}$')
+        && request.resource.data.keys().hasOnly(['path', 'tayang'])
+        && request.resource.data.path is string && request.resource.data.path.size() <= 200
+        && request.resource.data.tayang == 1;
+      allow update: if request.resource.data.keys().hasOnly(['path', 'tayang'])
+        && request.resource.data.path == resource.data.path
+        && request.resource.data.tayang == resource.data.tayang + 1;
+      allow delete: if false;
+    }
     match /undangan/{email} {
       allow get: if masuk() && (request.auth.token.email.lower() == email || pengurus());
       allow list: if pengurus();
