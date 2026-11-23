@@ -45,7 +45,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Pembangunan pura di NTB berulang kali terhenti karena urusan izin. Rancangan Perpres Kerukunan masih mempertahankan syarat 90/60. Persadha Nusantara NTB meminta negara menjalankan kewajibannya memfasilitasi, bukan sekadar menunggu persetujuan.',
     sampul: foto(S1, 'sampul.jpg'),
     sampulKecil: foto(S1, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
+    keteranganSampul: 'Kompleks pura di tengah pepohonan. Foto: Nicole Arango Lang, via Unsplash.',
     delta: jadi(
       p('Di Nusa Tenggara Barat, kabar tentang pura yang batal dibangun bukan cerita baru. Pembangunan pura di Bayan pernah diminta berhenti karena panitia tidak dapat menunjukkan izin. Pada 2018, pembangunan Pura Awan Rinjani di Lombok Utara dihentikan setelah rapat FKUB dan Kesbangpol menilai persyaratan teknis dan administratif belum terpenuhi, termasuk status tanahnya. Di Dompu, sebuah pura di Desa Pancasila, Kecamatan Pekat, diprotes dan diminta ditinjau ulang izinnya.'),
       p('Setiap kasus punya duduk perkaranya sendiri, dan Persadha Nusantara tidak membela pembangunan yang menabrak aturan. Namun polanya terlalu jelas untuk diabaikan: bagi umat yang jumlahnya kecil, jalan menuju rumah ibadat selalu lebih panjang, lebih mahal, dan lebih bergantung pada kemurahan hati tetangga.'),
@@ -124,7 +124,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Dari 1.662 pura yang bersertifikat lewat program nasional hingga Oktober 2023, 1.359 berada di Bali. Persoalan aset Pura Lingsar menunjukkan betapa rentannya tanah pura di NTB. Sertifikasi kini gratis, dan umat harus menuntutnya.',
     sampul: foto(S3, 'sampul.jpg'),
     sampulKecil: foto(S3, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
+    keteranganSampul: 'Pura Ulun Danu Beratan, Bali. Foto: via Pexels.',
     delta: jadi(
       p('Banyak pura di Lombok berdiri di atas tanah yang diwariskan turun-temurun tanpa selembar sertifikat. Selama para tetua masih hidup, semua orang tahu tanah itu milik pura. Begitu generasi berganti, ingatan bersama tidak lagi cukup di hadapan hukum.'),
       p('Pura Lingsar, simbol kerukunan Hindu dan Sasak di Lombok Barat, menjadi pengingat paling keras. Pada 2022, Majelis Agung Windu Sesukertaning Jagat Lombok melaporkan dugaan penyelewengan aset pura seluas 18,4 hektare ke kepolisian. Pada November 2023, krama dari lima banjar mendatangi Bupati Lombok Barat karena merasa pengelolaan pura dan kegiatan Pujawali diambil alih sejak 2017. Kompleks Taman Lingsar yang dahulu sekitar empat hektare kini disebut tinggal separuhnya.'),
@@ -272,7 +272,7 @@ export const KABAR_OPINI = [
     ringkasan: 'Di Kota Mataram, pembinaan umat Hindu banyak bertumpu pada 21 penyuluh non-PNS, dan kajian menyebut jumlah itu masih jauh dari kebutuhan. Honor mereka bertahun-tahun di kisaran Rp500 ribu per bulan. Negara tidak boleh membiarkan garda depan pembinaan umat bekerja dalam ketidakpastian.',
     sampul: foto(S7, 'sampul.jpg'),
     sampulKecil: foto(S7, 'sampul-kecil.jpg'),
-    keteranganSampul: 'Ilustrasi: DPD Persadha Nusantara NTB.',
+    keteranganSampul: 'Umat Hindu dalam upacara keagamaan bersama. Foto: Eyestetix Studio, via Unsplash.',
     delta: jadi(
       p('Ketika umat Hindu di sebuah banjar kecil membutuhkan pendampingan, entah untuk belajar sembahyang, menyiapkan upacara, menghadapi persoalan keluarga, atau sekadar ingin memahami ajaran agamanya, yang datang biasanya bukan pejabat, melainkan penyuluh agama. Merekalah garda depan pembinaan umat.'),
       p('Kajian tentang penyuluhan agama Hindu di Kota Mataram yang terbit di jurnal IAHN Gde Pudja Mataram mencatat bahwa keterbatasan penyuluh PNS membuat penyuluh non-PNS sangat penting, karena tidak semua wilayah dapat dijangkau. Kajian yang sama menyebut 21 penyuluh non-PNS di Mataram sangat membantu, tetapi jumlahnya masih jauh dari kebutuhan umat. Kajian itu juga mengaitkan tugas penyuluh dengan upaya mencegah umat meninggalkan agamanya karena tidak mendapat pembinaan.'),
