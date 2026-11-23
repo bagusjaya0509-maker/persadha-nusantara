@@ -1,4 +1,4 @@
-import { $, BASE, MODE, KONFIG, esc } from './inti.js';
+import { $, $$, BASE, MODE, KONFIG, esc } from './inti.js';
 import { daftarKabar } from './publik.js';
 import { utamaKabar, barisKabar } from './kartu.js';
 
@@ -33,3 +33,11 @@ if (MODE === 'mati') {
   const k = KONFIG.kontak?.whatsapp ? KONFIG.kontak : KONFIG.induk;
   if (d && k?.whatsapp) d.insertAdjacentHTML('beforeend', ` Sekretariat: <a href="https://wa.me/${esc(k.whatsapp)}">${esc(k.telepon)}</a>.`);
 }
+
+// Enam bidang kerja: di HP menjadi daftar lipat supaya beranda tidak memanjang; di layar lebar selalu terbuka.
+const bidang = $$('.kisi-bidang details.bidang');
+const hp = matchMedia('(max-width: 640px)');
+const aturBidang = () => bidang.forEach((d) => { d.open = !hp.matches; });
+aturBidang();
+hp.addEventListener('change', aturBidang);
+bidang.forEach((d) => $('summary', d).addEventListener('click', (e) => { if (!hp.matches) e.preventDefault(); }));

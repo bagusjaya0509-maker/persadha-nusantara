@@ -138,6 +138,7 @@ function pasangKepala() {
   tMenu?.addEventListener('click', () => {
     const buka = !nav.classList.contains('terbuka');
     if (!buka) return tutupMenu();
+    nav.style.setProperty('--atas-nav', `${Math.max(0, Math.round(kepala.getBoundingClientRect().bottom))}px`);
     nav.classList.add('terbuka');
     document.body.classList.add('menu-terbuka');
     tMenu.setAttribute('aria-expanded', 'true');
