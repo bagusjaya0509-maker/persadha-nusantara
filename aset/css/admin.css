@@ -157,3 +157,38 @@ a.ubin:hover { border-color: var(--tinta-2); color: var(--tinta); }
   .grafik-batang li { grid-template-columns: 1fr 36px; }
   .gb-label { grid-column: 1 / -1; }
 }
+
+/* ---------- pengumuman (papan beranda) ---------- */
+.papan-adm { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.papan-adm-baris { display: grid; grid-template-columns: 148px 1fr auto; gap: 18px; align-items: center; background: var(--kapur); border: 1px solid var(--garis); border-radius: 12px; padding: 12px 16px 12px 12px; }
+.papan-adm-gambar { aspect-ratio: 16 / 10; border-radius: 6px; overflow: hidden; background: linear-gradient(160deg, var(--bata), var(--anggur)); display: grid; place-items: center; color: var(--prada-muda); }
+.papan-adm-gambar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.papan-adm-gambar .ikon { width: 26px; height: 26px; }
+.papan-adm-teks { min-width: 0; }
+.papan-adm-teks small { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--prada-tua); }
+.papan-adm-teks h3 { font-size: 1.15rem; line-height: 1.25; margin: 2px 0 8px; }
+.papan-adm-teks p { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.papan-adm-aksi { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; align-items: center; }
+.papan-adm-aksi [data-naik] .ikon { transform: rotate(90deg); }
+.papan-adm-aksi [data-turun] .ikon { transform: rotate(90deg); }
+.papan-adm-aksi .tombol-ikon[disabled] { opacity: 0.3; pointer-events: none; }
+.papan-form { display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px; }
+.papan-form-isian { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.papan-form-samping { min-width: 0; }
+.papan-form .baris-medan { align-items: start; }
+.papan-form-catatan { margin: -6px 0 0; font-size: 0.86rem; color: var(--tinta-2); }
+.papan-form .medan-label { font-weight: 700; font-size: 0.95rem; margin: 0 0 8px; }
+.papan-form input[type='datetime-local'] { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--garis-2); border-radius: var(--radius); background: #fff; }
+.papan-unggah { display: block; padding: 16px; }
+.papan-unggah span { display: grid; gap: 2px; }
+.papan-unggah small { color: var(--tinta-2); font-size: 0.82rem; }
+.papan-pratinjau .baliho { box-shadow: 0 0 0 1px rgb(201 160 74 / 0.6); }
+.papan-pratinjau .baliho h2 { font-size: 1.35rem; }
+.papan-pratinjau .baliho p { font-size: 0.85rem; }
+.papan-pratinjau .baliho-isi { padding: 20px 22px 22px; }
+@media (max-width: 760px) {
+  .papan-adm-baris { grid-template-columns: 96px 1fr; }
+  .papan-adm-aksi { grid-column: 1 / -1; justify-content: flex-start; }
+  .papan-form { grid-template-columns: 1fr; }
+  .papan-form .baris-medan { grid-template-columns: 1fr; gap: 16px; }
+}

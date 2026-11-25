@@ -61,6 +61,30 @@ service cloud.firestore {
       allow read, write: if pengurus();
     }
 
+    // ---------- pengumuman: slaid papan di hero beranda ----------
+    // Siapa saja boleh membaca. Pengurus boleh membuat & menyunting; hanya pengurus utama yang
+    // boleh menurunkan pengumuman yang sedang tayang dan menghapusnya.
+    function pengumumanSah(d) {
+      return hanyaKunci(d, ['judul', 'teks', 'label', 'tautan', 'tombol', 'aktif', 'urutan', 'mulai', 'sampai', 'adaGambar', 'oleh', 'dibuat', 'diubah'])
+        && teksWajib(d.judul, 3, 120) && teks(d.teks, 300) && teks(d.label, 40) && teks(d.tautan, 300) && teks(d.tombol, 40)
+        && d.aktif is bool && d.adaGambar is bool && d.urutan is int && teks(d.oleh, 120)
+        && (d.mulai == null || d.mulai is timestamp) && (d.sampai == null || d.sampai is timestamp);
+    }
+    match /pengumuman/{id} {
+      allow read: if true;
+      allow create: if pengurus() && id.matches('^[A-Za-z0-9]{6,40}$') && pengumumanSah(request.resource.data);
+      allow update: if pengurus() && pengumumanSah(request.resource.data)
+        && (utama() || !(resource.data.aktif == true && request.resource.data.aktif == false));
+      allow delete: if utama();
+    }
+    match /pengumumanGambar/{id} {
+      allow read: if true;
+      allow create, update: if pengurus() && id.matches('^[A-Za-z0-9]{6,40}$')
+        && hanyaKunci(request.resource.data, ['data', 'diubah'])
+        && request.resource.data.data is string && request.resource.data.data.size() < 1000000;
+      allow delete: if pengurus();
+    }
+
     // ---------- profil pengguna ----------
     function profilSah(d) {
       return teksWajib(d.nama, 1, 80) && teks(d.wa, 20) && teks(d.provinsi, 40) && teks(d.kota, 60);

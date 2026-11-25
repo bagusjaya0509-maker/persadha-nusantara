@@ -1,7 +1,7 @@
 // Bacaan publik (kabar). Mode firebase memakai REST supaya ringan;
 // mode demo membaca localStorage.
 import { KONFIG, MODE } from './inti.js';
-import { kueriKabar, ambilDokumen } from './rest.js';
+import { kueriKabar, ambilDokumen, daftarDokumen } from './rest.js';
 import { KABAR_AWAL } from './kabar-awal.js';
 
 // Sebelum Firebase disambungkan, situs yang tayang tetap menampilkan tiga
@@ -73,4 +73,29 @@ export async function ambilKabar(slug) {
   const k = KABAR_AWAL.find((x) => x.slug === slug);
   if (k && (await firestoreKosong())) return { kabar: awal().find((x) => x.id === slug), isi: isiAwal(k) };
   return null;
+}
+
+// ---------- pengumuman (papan di hero beranda) ----------
+// Pengumuman aktif yang masa tayangnya berlaku, urut sesuai pilihan pengurus.
+const berlaku = (p, kini = Date.now()) => p.aktif && (!p.mulai || p.mulai <= kini) && (!p.sampai || p.sampai > kini);
+const urutPengumuman = (a, b) => (a.urutan ?? 99) - (b.urutan ?? 99) || (b.dibuat || 0) - (a.dibuat || 0);
+
+export async function daftarPengumuman() {
+  if (MODE === 'demo') {
+    const { bacaDemo } = await import('./demo.js');
+    return Object.entries(bacaDemo().pengumuman || {}).map(([id, p]) => ({ id, ...p })).filter((p) => berlaku(p)).sort(urutPengumuman);
+  }
+  if (MODE !== 'firebase') return [];
+  const semua = await daftarDokumen({ ...fb(), koleksi: 'pengumuman', batas: 40 });
+  return semua.filter((p) => berlaku(p)).sort(urutPengumuman).slice(0, 8);
+}
+
+/** Gambar pengumuman disimpan terpisah supaya daftar tetap ringan; dimuat per slaid. */
+export async function gambarPengumuman(id) {
+  if (MODE === 'demo') {
+    const { bacaDemo } = await import('./demo.js');
+    return bacaDemo().pengumuman?.[id]?.gambar || '';
+  }
+  const d = await ambilDokumen({ ...fb(), jalur: `pengumumanGambar/${id}` });
+  return d?.data || '';
 }

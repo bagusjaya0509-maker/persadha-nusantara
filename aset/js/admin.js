@@ -95,6 +95,7 @@ async function rute() {
     else if (bagian === 'kabar' && a === 'baru') await vEditor(null);
     else if (bagian === 'kabar' && a === 'edit') await vEditor(b);
     else if (bagian === 'kabar') await vKabar();
+    else if (bagian === 'pengumuman') await vPengumuman();
     else if (bagian === 'aduan' || bagian === 'aspirasi') await vLaporan(bagian);
     else if (bagian === 'laporan') await vDetailLaporan(a);
     else if (bagian === 'anggota') await vAnggota(a);
@@ -281,6 +282,163 @@ async function vKabar() {
       for (const k of awalBelum) await L.terbitkan({ ...k, sampul: k.sampul || '', sampulKecil: k.sampulKecil || '', keteranganSampul: k.keteranganSampul || '' });
       roti(`${awalBelum.length} kabar awal terbit.`, 'berhasil');
       vKabar();
+    } catch (err) { roti(pesanGalat(err), 'galat'); }
+  }));
+}
+
+// ======================================================================
+// pengumuman: slaid papan di hero beranda
+// ======================================================================
+function statusPapan(p, kini = Date.now()) {
+  if (!p.aktif) return ['draf', 'Nonaktif'];
+  if (p.mulai && p.mulai > kini) return ['ditinjau', `Tayang mulai ${tanggalPendek(p.mulai)}`];
+  if (p.sampai && p.sampai <= kini) return ['ditutup', 'Masa tayang habis'];
+  return ['terbit', 'Tayang di beranda'];
+}
+
+function pratinjauBaliho({ judul, teks, label, tombol, tautan }, gambar) {
+  return `<div class="baliho${gambar ? '' : ' tanpa-foto'}" style="--lebar-baliho:100%">
+    ${gambar ? `<figure class="baliho-foto"><img src="${esc(gambar)}" alt=""></figure>` : ''}
+    <div class="baliho-isi">
+      <p class="baliho-label">${esc(label || 'Pengumuman')}</p>
+      <h2>${esc(judul || 'Judul pengumuman')}</h2>
+      ${teks ? `<p>${esc(teks)}</p>` : ''}
+      ${tautan ? `<span class="baliho-ajak">${esc(tombol || 'Selengkapnya')}${ikon('arrow-right')}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+async function vPengumuman() {
+  setJudul('Pengumuman');
+  aksi.innerHTML = `<button class="tombol tombol-utama kecil" type="button" data-papan-baru>${ikon('plus')}Buat pengumuman</button>`;
+  const daftar = await L.semuaPengumuman();
+  const tayang = daftar.filter((p) => statusPapan(p)[0] === 'terbit').length;
+  isi.innerHTML = `
+    <p class="petunjuk adm-catatan" style="margin:0 0 20px">${ikon('info')}<span>Pengumuman yang tayang menjadi slaid di bagian paling atas beranda, sesudah slaid sapaan, dan berganti otomatis tiap 7 detik. ${tayang ? `Saat ini <b>${tayang} pengumuman</b> tayang.` : 'Saat ini belum ada pengumuman yang tayang, jadi beranda menampilkan tiga kabar terbaru.'}</span></p>
+    ${daftar.length ? `<ol class="papan-adm">${daftar.map((p, i) => {
+      const [st, teksSt] = statusPapan(p);
+      return `<li class="papan-adm-baris" data-id="${esc(p.id)}">
+        <div class="papan-adm-gambar${p.adaGambar ? '' : ' kosong'}" data-gambar-id="${p.adaGambar ? esc(p.id) : ''}">${p.adaGambar ? '' : ikon('megaphone')}</div>
+        <div class="papan-adm-teks">
+          <small>${esc(p.label || 'Pengumuman')}</small>
+          <h3>${esc(p.judul)}</h3>
+          <p><span class="status" data-status="${st}">${esc(teksSt)}</span>${p.sampai && st === 'terbit' ? ` <span class="meta-kecil">sampai ${esc(tanggalPendek(p.sampai))}</span>` : ''}</p>
+        </div>
+        <div class="papan-adm-aksi">
+          <button class="tombol-ikon" type="button" data-naik title="Naikkan urutan" aria-label="Naikkan urutan" ${i === 0 ? 'disabled' : ''}>${ikon('chevron-left')}</button>
+          <button class="tombol-ikon" type="button" data-turun title="Turunkan urutan" aria-label="Turunkan urutan" ${i === daftar.length - 1 ? 'disabled' : ''}>${ikon('chevron-right')}</button>
+          <button class="tombol tombol-garis kecil" type="button" data-sunting>${ikon('pencil')}Sunting</button>
+          ${!p.aktif ? `<button class="tombol tombol-garis kecil" type="button" data-aktif="1">${ikon('eye')}Tayangkan</button>`
+            : saya.utama ? `<button class="tombol tombol-garis kecil" type="button" data-aktif="0">${ikon('eye-off')}Turunkan</button>` : ''}
+          ${saya.utama ? `<button class="tombol tombol-hapus kecil" type="button" data-hapus>${ikon('x')}Hapus</button>` : ''}
+        </div>
+      </li>`;
+    }).join('')}</ol>` : '<div class="kosong"><h3>Belum ada pengumuman</h3><p>Buat pengumuman untuk jadwal kegiatan, undangan rapat umat, pendaftaran anggota, atau seruan penting. Pengumuman tampil sebagai papan besar di beranda.</p></div>'}
+    ${saya.utama ? '' : `<p class="petunjuk adm-catatan">${ikon('info')}<span>Menurunkan dan menghapus pengumuman yang sudah tayang hanya bisa dilakukan pengurus utama.</span></p>`}`;
+
+  // muat gambar kecil satu per satu
+  for (const el of $$('[data-gambar-id]', isi)) {
+    if (!el.dataset.gambarId) continue;
+    L.gambarPengumuman(el.dataset.gambarId).then((g) => { if (g) el.innerHTML = `<img src="${esc(g)}" alt="">`; }).catch(() => {});
+  }
+
+  $('[data-papan-baru]', aksi).addEventListener('click', () => formPengumuman(null, daftar));
+  $('.papan-adm', isi)?.addEventListener('click', async (e) => {
+    const b = e.target.closest('button');
+    const baris = b?.closest('.papan-adm-baris');
+    if (!b || !baris) return;
+    const p = daftar.find((x) => x.id === baris.dataset.id);
+    try {
+      if (b.hasAttribute('data-sunting')) return formPengumuman(p, daftar);
+      if (b.hasAttribute('data-naik') || b.hasAttribute('data-turun')) {
+        const ids = daftar.map((x) => x.id);
+        const i = ids.indexOf(p.id);
+        const j = i + (b.hasAttribute('data-naik') ? -1 : 1);
+        [ids[i], ids[j]] = [ids[j], ids[i]];
+        await denganMemuat(b, () => L.urutkanPengumuman(ids));
+        return vPengumuman();
+      }
+      if (b.dataset.aktif) {
+        await denganMemuat(b, () => L.simpanPengumuman({ ...p, aktif: b.dataset.aktif === '1' }));
+        roti(b.dataset.aktif === '1' ? 'Pengumuman tayang di beranda.' : 'Pengumuman diturunkan dari beranda.', 'berhasil');
+        return vPengumuman();
+      }
+      if (b.hasAttribute('data-hapus')) {
+        if (!confirm(`Hapus pengumuman “${p.judul}”? Pengumuman dan fotonya terhapus permanen.`)) return;
+        await denganMemuat(b, () => L.hapusPengumuman(p.id));
+        roti('Pengumuman dihapus.', 'berhasil');
+        return vPengumuman();
+      }
+    } catch (err) { roti(pesanGalat(err), 'galat'); }
+  });
+}
+
+async function formPengumuman(lama, daftar) {
+  const p = {
+    id: lama?.id || '', judul: lama?.judul || '', teks: lama?.teks || '', label: lama?.label || 'Pengumuman',
+    tautan: lama?.tautan || '', tombol: lama?.tombol || '', aktif: lama ? Boolean(lama.aktif) : true,
+    mulai: lama?.mulai || null, sampai: lama?.sampai || null, dibuat: lama?.dibuat || null, oleh: lama?.oleh || '',
+    adaGambar: Boolean(lama?.adaGambar), urutan: lama?.urutan ?? (daftar.length ? Math.max(...daftar.map((x) => x.urutan ?? 0)) + 1 : 1),
+  };
+  let gambar = lama?.adaGambar ? await L.gambarPengumuman(lama.id).catch(() => '') : '';
+  let gambarBerubah; // undefined = tetap, string = baru, null = dihapus
+  const m = bukaModal(lama ? 'Sunting pengumuman' : 'Buat pengumuman', `
+    <form class="papan-form" data-papan-form novalidate>
+      <div class="papan-form-isian">
+        <div class="medan"><label for="pg-judul">Judul <span class="wajib">*</span></label><input id="pg-judul" name="judul" type="text" maxlength="120" required value="${esc(p.judul)}" placeholder="Contoh: Pendaftaran anggota baru dibuka"></div>
+        <div class="medan"><label for="pg-teks">Keterangan singkat</label><textarea id="pg-teks" name="teks" maxlength="300" rows="3" style="min-height:90px" placeholder="Satu-dua kalimat: apa, kapan, di mana.">${esc(p.teks)}</textarea></div>
+        <div class="baris-medan">
+          <div class="medan"><label for="pg-label">Label kecil</label><input id="pg-label" name="label" type="text" maxlength="40" value="${esc(p.label)}" placeholder="Pengumuman"><p class="petunjuk">Contoh: Undangan, Agenda, Seruan.</p></div>
+          <div class="medan"><label for="pg-tombol">Teks tombol</label><input id="pg-tombol" name="tombol" type="text" maxlength="40" value="${esc(p.tombol)}" placeholder="Selengkapnya"></div>
+        </div>
+        <div class="medan"><label for="pg-tautan">Tautan tujuan</label><input id="pg-tautan" name="tautan" type="text" maxlength="300" value="${esc(p.tautan)}" placeholder="/layanan/anggota/ atau https://…"><p class="petunjuk">Halaman situs ini diawali garis miring, misalnya <span class="kode">/kabar/</span>. Kosongkan bila pengumuman tidak perlu tombol.</p></div>
+        <div class="baris-medan">
+          <div class="medan"><label for="pg-mulai">Tayang mulai</label><input id="pg-mulai" name="mulai" type="datetime-local" value="${p.mulai ? keLokal(p.mulai) : ''}"></div>
+          <div class="medan"><label for="pg-sampai">Tayang sampai</label><input id="pg-sampai" name="sampai" type="datetime-local" value="${p.sampai ? keLokal(p.sampai) : ''}"></div>
+        </div>
+        <p class="petunjuk papan-form-catatan">Kosongkan tanggal bila pengumuman tayang sampai diturunkan.</p>
+        ${!lama || !lama.aktif || saya.utama ? `<label class="centang"><input type="checkbox" name="aktif" ${p.aktif ? 'checked' : ''}><span>Tayangkan di beranda</span></label>` : ''}
+      </div>
+      <div class="papan-form-samping">
+        <p class="medan-label">Foto latar</p>
+        <label class="unggah papan-unggah"><input type="file" accept="image/*" hidden data-pg-berkas><span>${ikon('upload')}<b>Pilih foto</b><small>Foto kegiatan atau poster tanpa banyak tulisan. Otomatis diperkecil.</small></span></label>
+        <button class="tombol-teks" type="button" data-pg-hapus-foto ${gambar ? '' : 'hidden'}>${ikon('x')}Hapus foto</button>
+        <p class="medan-label" style="margin-top:14px">Pratinjau</p>
+        <div class="papan-pratinjau" data-pg-pratinjau></div>
+      </div>
+    </form>`,
+  `<button class="tombol tombol-garis" type="button" data-pg-batal>Batal</button><button class="tombol tombol-utama" type="button" data-pg-simpan>${ikon('check')}Simpan</button>`, 980);
+
+  const f = $('[data-papan-form]', m);
+  const nilai = () => ({ judul: f.judul.value, teks: f.teks.value, label: f.label.value, tombol: f.tombol.value, tautan: f.tautan.value });
+  const segar = () => { $('[data-pg-pratinjau]', m).innerHTML = pratinjauBaliho(nilai(), gambar); $('[data-pg-hapus-foto]', m).hidden = !gambar; };
+  segar();
+  f.addEventListener('input', segar);
+  $('[data-pg-berkas]', m).addEventListener('change', async (e) => {
+    const berkas = e.target.files[0];
+    if (!berkas) return;
+    try {
+      gambar = await kompres(berkas, { maks: 1600, mutu: 0.74 });
+      if (ukuranDataUrl(gambar) > 900_000) gambar = await kompres(berkas, { maks: 1280, mutu: 0.66 });
+      gambarBerubah = gambar;
+      segar();
+    } catch { roti('Foto tidak bisa dibaca. Pilih berkas JPG atau PNG.', 'galat'); }
+  });
+  $('[data-pg-hapus-foto]', m).addEventListener('click', () => { gambar = ''; gambarBerubah = null; segar(); });
+  $('[data-pg-batal]', m).addEventListener('click', () => m.close());
+  $('[data-pg-simpan]', m).addEventListener('click', (e) => denganMemuat(e.currentTarget, async () => {
+    const v = nilai();
+    if (v.judul.trim().length < 3) { f.judul.setAttribute('aria-invalid', 'true'); f.judul.focus(); roti('Isi judul pengumuman (minimal 3 huruf).', 'galat'); return; }
+    const t = v.tautan.trim();
+    if (t && !/^(\/|https:\/\/|mailto:)/i.test(t)) { f.tautan.setAttribute('aria-invalid', 'true'); f.tautan.focus(); roti('Tautan harus diawali / (halaman situs ini) atau https://', 'galat'); return; }
+    const mulai = f.mulai.value ? new Date(f.mulai.value).getTime() : null;
+    const sampai = f.sampai.value ? new Date(f.sampai.value).getTime() : null;
+    if (mulai && sampai && sampai <= mulai) { roti('Tanggal "tayang sampai" harus sesudah "tayang mulai".', 'galat'); return; }
+    try {
+      await L.simpanPengumuman({ ...p, ...v, tautan: t, mulai, sampai, aktif: f.aktif ? f.aktif.checked : p.aktif }, gambarBerubah);
+      m.close();
+      roti('Pengumuman disimpan.', 'berhasil');
+      vPengumuman();
     } catch (err) { roti(pesanGalat(err), 'galat'); }
   }));
 }

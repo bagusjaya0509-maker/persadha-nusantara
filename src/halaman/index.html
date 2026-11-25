@@ -1,6 +1,6 @@
 <!--{"judul":"Beranda","judulPenuh":"Persadha Nusantara NTB — DPD Provinsi Nusa Tenggara Barat","path":"","nav":"beranda","skrip":["beranda.js"],"prioritas":"1.0"}-->
 <main id="isi">
-  <section class="pintu" aria-labelledby="judul-pintu">
+  <section class="pintu" aria-roledescription="carousel" aria-label="Sorotan dan pengumuman">
     <div class="pintu-latar" aria-hidden="true">
       <svg width="0" height="0" style="position:absolute" focusable="false">
         <defs>
@@ -28,6 +28,8 @@
       <svg class="pintu-gerbang kanan" viewBox="0 0 320 900" preserveAspectRatio="xMidYMax meet" focusable="false"><use href="#gerbang-kiri"/></svg>
       <div class="pintu-tangga"></div>
     </div>
+    <div class="papan" data-papan aria-live="off">
+    <div class="papan-slaid aktif" role="group" aria-roledescription="slide" aria-label="Selamat datang" data-judul-slaid="Selamat datang">
     <div class="pintu-isi">
       <p class="label pintu-label"><span>DPD Provinsi Nusa Tenggara Barat</span> <span class="pintu-label-masa">Masa Bhakti 2026–2031</span></p>
       <h1 id="judul-pintu">Berlandaskan Dharma, <em>bergerak untuk Nusantara.</em></h1>
@@ -37,6 +39,14 @@
         <a class="tombol tombol-utama" href="{{BASE}}layanan/aduan/">Laporkan masalah</a>
         <a class="tombol tombol-garis" href="{{BASE}}tentang/">Kenali Persadha</a>
       </div>
+    </div>
+    </div>
+    </div>
+    <div class="papan-kendali" data-papan-kendali hidden>
+      <button class="papan-panah" type="button" data-papan-mundur aria-label="Slaid sebelumnya"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-chevron-left"/></svg></button>
+      <div class="papan-titik" data-papan-titik></div>
+      <button class="papan-panah" type="button" data-papan-maju aria-label="Slaid berikutnya"><svg class="ikon" aria-hidden="true"><use href="{{BASE}}aset/img/ikon.svg#i-chevron-right"/></svg></button>
+      <button class="papan-jeda" type="button" data-papan-jeda aria-label="Hentikan putar otomatis" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="jeda" x="7" y="5" width="3.4" height="14" rx="1"/><rect class="jeda" x="13.6" y="5" width="3.4" height="14" rx="1"/><path class="putar" d="M8 5.5v13l10.5-6.5z"/></svg></button>
     </div>
   </section>
 

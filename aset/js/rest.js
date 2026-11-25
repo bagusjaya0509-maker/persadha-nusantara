@@ -64,6 +64,12 @@ export async function kueriKabar({ projectId, apiKey, batas = 12, setelah = null
   return j.filter((x) => x.document).map((x) => dariDokumen(x.document));
 }
 
+/** Seluruh dokumen satu koleksi kecil (mis. pengumuman), tanpa indeks. */
+export async function daftarDokumen({ projectId, apiKey, koleksi, batas = 30, fetchFn = fetch }) {
+  const j = await minta(`${akar(projectId)}/${koleksi}?key=${apiKey}&pageSize=${batas}`, {}, fetchFn);
+  return (j.documents || []).map(dariDokumen);
+}
+
 /** Ambil satu dokumen; null bila tidak ada. */
 export async function ambilDokumen({ projectId, apiKey, jalur, fetchFn = fetch }) {
   try {

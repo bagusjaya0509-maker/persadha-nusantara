@@ -439,6 +439,51 @@ const fbMesin = {
     ['kabar', 'kabarIsi', 'draf'].forEach((c) => b.delete(F.doc(db, c, slug)));
     await b.commit();
   },
+
+  // ---------- pengumuman (papan di hero beranda) ----------
+  async semuaPengumuman() {
+    wajibAdmin();
+    const { F, db } = await fb();
+    const s = await F.getDocs(F.collection(db, 'pengumuman'));
+    return s.docs.map(rapikan).sort(urutPapan);
+  },
+  async gambarPengumuman(id) {
+    const { F, db } = await fb();
+    const d = await F.getDoc(F.doc(db, 'pengumumanGambar', id));
+    return d.exists() ? d.data().data || '' : '';
+  },
+  /** gambar: string data URL = ganti, null = hapus, undefined = biarkan. */
+  async simpanPengumuman(p, gambar) {
+    const saya = wajibAdmin();
+    const { F, db } = await fb();
+    const id = p.id || F.doc(F.collection(db, 'pengumuman')).id;
+    const m = potongPengumuman(p, gambar);
+    const ts = (ms) => (ms ? F.Timestamp.fromMillis(ms) : null);
+    const b = F.writeBatch(db);
+    b.set(F.doc(db, 'pengumuman', id), {
+      ...m, mulai: ts(m.mulai), sampai: ts(m.sampai), oleh: p.oleh || saya.nama || saya.email,
+      dibuat: p.dibuat ? F.Timestamp.fromMillis(p.dibuat) : F.serverTimestamp(), diubah: F.serverTimestamp(),
+    });
+    if (typeof gambar === 'string') b.set(F.doc(db, 'pengumumanGambar', id), { data: gambar, diubah: F.serverTimestamp() });
+    if (gambar === null) b.delete(F.doc(db, 'pengumumanGambar', id));
+    await b.commit();
+    return id;
+  },
+  async urutkanPengumuman(daftarId) {
+    wajibAdmin();
+    const { F, db } = await fb();
+    const b = F.writeBatch(db);
+    daftarId.forEach((id, i) => b.update(F.doc(db, 'pengumuman', id), { urutan: i + 1, diubah: F.serverTimestamp() }));
+    await b.commit();
+  },
+  async hapusPengumuman(id) {
+    wajibAdmin();
+    const { F, db } = await fb();
+    const b = F.writeBatch(db);
+    b.delete(F.doc(db, 'pengumumanGambar', id));
+    b.delete(F.doc(db, 'pengumuman', id));
+    await b.commit();
+  },
 };
 
 // Pemberitahuan surel untuk pengurus lewat FormSubmit (gratis, tanpa server).
@@ -764,6 +809,38 @@ const demoMesin = {
     const d = await demo();
     d.ubahDemo((s) => { delete s.kabar[slug]; delete s.kabarIsi[slug]; delete s.draf[slug]; });
   },
+
+  async semuaPengumuman() {
+    wajibAdmin();
+    const d = await demo();
+    return Object.entries(d.bacaDemo().pengumuman || {}).map(([id, { gambar, ...p }]) => ({ id, ...p })).sort(urutPapan);
+  },
+  async gambarPengumuman(id) {
+    const d = await demo();
+    return d.bacaDemo().pengumuman?.[id]?.gambar || '';
+  },
+  async simpanPengumuman(p, gambar) {
+    const saya = wajibAdmin();
+    const d = await demo();
+    const id = p.id || d.idAcak(20);
+    const m = potongPengumuman(p, gambar);
+    d.ubahDemo((s) => {
+      s.pengumuman ||= {};
+      const lama = s.pengumuman[id] || {};
+      s.pengumuman[id] = { ...m, oleh: p.oleh || saya.nama, dibuat: p.dibuat || Date.now(), diubah: Date.now(), gambar: typeof gambar === 'string' ? gambar : gambar === null ? '' : lama.gambar || '' };
+    });
+    return id;
+  },
+  async urutkanPengumuman(daftarId) {
+    wajibAdmin();
+    const d = await demo();
+    d.ubahDemo((s) => daftarId.forEach((id, i) => { if (s.pengumuman?.[id]) s.pengumuman[id].urutan = i + 1; }));
+  },
+  async hapusPengumuman(id) {
+    wajibAdmin();
+    const d = await demo();
+    d.ubahDemo((s) => { delete s.pengumuman?.[id]; });
+  },
 };
 
 // ======================================================================
@@ -776,6 +853,17 @@ function potongKabar(k) {
     delta: typeof k.delta === 'string' ? k.delta : JSON.stringify(k.delta || []),
   };
 }
+// Bentuk baku dokumen pengumuman (dijaga juga oleh firestore.rules).
+function potongPengumuman(p, gambar) {
+  const adaGambar = typeof gambar === 'string' ? true : gambar === null ? false : Boolean(p.adaGambar);
+  return {
+    judul: String(p.judul || '').trim().slice(0, 120), teks: String(p.teks || '').trim().slice(0, 300),
+    label: String(p.label || '').trim().slice(0, 40), tautan: String(p.tautan || '').trim().slice(0, 300),
+    tombol: String(p.tombol || '').trim().slice(0, 40), aktif: Boolean(p.aktif), adaGambar,
+    urutan: Number.isInteger(p.urutan) ? p.urutan : 99, mulai: p.mulai || null, sampai: p.sampai || null,
+  };
+}
+const urutPapan = (a, b) => (a.urutan ?? 99) - (b.urutan ?? 99) || (b.dibuat || 0) - (a.dibuat || 0);
 function gabungKabar(terbit, draf) {
   const peta = new Map();
   for (const k of terbit) peta.set(k.id, { ...k, slug: k.id, terbit: true, adaDraf: false });
