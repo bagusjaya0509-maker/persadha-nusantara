@@ -182,10 +182,13 @@ a.ubin:hover { border-color: var(--tinta-2); color: var(--tinta); }
 .papan-unggah { display: block; padding: 16px; }
 .papan-unggah span { display: grid; gap: 2px; }
 .papan-unggah small { color: var(--tinta-2); font-size: 0.82rem; }
-.papan-pratinjau .baliho { box-shadow: 0 0 0 1px rgb(201 160 74 / 0.6); }
-.papan-pratinjau .baliho h2 { font-size: 1.35rem; }
-.papan-pratinjau .baliho p { font-size: 0.85rem; }
-.papan-pratinjau .baliho-isi { padding: 20px 22px 22px; }
+.papan-pratinjau { position: relative; aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden; }
+.papan-pratinjau .baliho h2 { font-size: 1.05rem; }
+.papan-pratinjau .baliho p { font-size: 0.72rem; margin-top: 6px; -webkit-line-clamp: 2; }
+.papan-pratinjau .baliho-label { font-size: 0.6rem; margin-bottom: 4px; }
+.papan-pratinjau .baliho-ajak { font-size: 0.75rem; margin-top: 8px; }
+.papan-pratinjau .baliho-isi { padding: 0 12px 14px; }
+.papan-pratinjau .baliho-kotak { padding: 12px 14px; max-width: 78%; border-left-width: 3px; }
 @media (max-width: 760px) {
   .papan-adm-baris { grid-template-columns: 96px 1fr; }
   .papan-adm-aksi { grid-column: 1 / -1; justify-content: flex-start; }

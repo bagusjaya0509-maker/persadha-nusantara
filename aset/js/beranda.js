@@ -46,7 +46,7 @@ bidang.forEach((d) => $('summary', d).addEventListener('click', (e) => { if (!hp
 // Papan pengumuman di hero (carousel). Slaid 0 = sapaan; berikutnya baliho dari
 // panel > Pengumuman, atau tiga kabar terbaru bila belum ada pengumuman aktif.
 // ======================================================================
-const LAMA = 7000; // ms per slaid
+const LAMA = 2000; // ms per slaid (25 Nov 2026: pemilik minta 2 detik)
 const papan = $('[data-papan]');
 const kendali = $('[data-papan-kendali]');
 const geraknyaDikurangi = matchMedia('(prefers-reduced-motion: reduce)');
@@ -64,15 +64,15 @@ function baliho(s, i) {
   const tag = s.tautan ? 'a' : 'div';
   const luar = /^https:/i.test(s.tautan) && !s.tautan.startsWith(location.origin) ? ' target="_blank" rel="noopener"' : '';
   const foto = s.gambar || s.idGambar;
-  return `<div class="papan-slaid" role="group" aria-roledescription="slide" aria-label="${esc(s.judul)}" data-judul-slaid="${esc(s.judul)}" inert aria-hidden="true">
+  return `<div class="papan-slaid slaid-papan" role="group" aria-roledescription="slide" aria-label="${esc(s.judul)}" data-judul-slaid="${esc(s.judul)}" inert aria-hidden="true">
     <${tag} class="baliho${foto ? '' : ' tanpa-foto'}"${s.tautan ? ` href="${esc(s.tautan)}"${luar}` : ''}>
       ${foto ? `<figure class="baliho-foto"><img alt="" decoding="async"${s.gambar ? ` data-src="${esc(s.gambar)}"` : ''} data-id-gambar="${esc(s.idGambar || '')}"></figure>` : ''}
-      <div class="baliho-isi">
+      <div class="baliho-isi"><div class="baliho-kotak">
         ${s.label ? `<p class="baliho-label">${esc(s.label)}</p>` : ''}
         <h2>${esc(s.judul)}</h2>
         ${s.teks ? `<p>${esc(s.teks)}</p>` : ''}
         ${s.tautan ? `<span class="baliho-ajak">${esc(s.tombol || 'Selengkapnya')}${ikon('arrow-right')}</span>` : ''}
-      </div>
+      </div></div>
     </${tag}>
   </div>`;
 }
@@ -147,6 +147,7 @@ function jalankanPapan() {
     const garis = $('span', tombol[baru]);
     garis.style.animation = 'none'; void garis.offsetWidth; garis.style.animation = '';
     kini = baru;
+    papan.closest('.pintu').classList.toggle('di-papan', baru > 0);
     muatGambar(semua[baru]);
     muatGambar(semua[(baru + 1) % semua.length]);
   }

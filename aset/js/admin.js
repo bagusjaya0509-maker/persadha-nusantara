@@ -297,14 +297,14 @@ function statusPapan(p, kini = Date.now()) {
 }
 
 function pratinjauBaliho({ judul, teks, label, tombol, tautan }, gambar) {
-  return `<div class="baliho${gambar ? '' : ' tanpa-foto'}" style="--lebar-baliho:100%">
+  return `<div class="baliho${gambar ? '' : ' tanpa-foto'}">
     ${gambar ? `<figure class="baliho-foto"><img src="${esc(gambar)}" alt=""></figure>` : ''}
-    <div class="baliho-isi">
+    <div class="baliho-isi"><div class="baliho-kotak">
       <p class="baliho-label">${esc(label || 'Pengumuman')}</p>
       <h2>${esc(judul || 'Judul pengumuman')}</h2>
       ${teks ? `<p>${esc(teks)}</p>` : ''}
       ${tautan ? `<span class="baliho-ajak">${esc(tombol || 'Selengkapnya')}${ikon('arrow-right')}</span>` : ''}
-    </div>
+    </div></div>
   </div>`;
 }
 
@@ -314,7 +314,7 @@ async function vPengumuman() {
   const daftar = await L.semuaPengumuman();
   const tayang = daftar.filter((p) => statusPapan(p)[0] === 'terbit').length;
   isi.innerHTML = `
-    <p class="petunjuk adm-catatan" style="margin:0 0 20px">${ikon('info')}<span>Pengumuman yang tayang menjadi slaid di bagian paling atas beranda, sesudah slaid sapaan, dan berganti otomatis tiap 7 detik. ${tayang ? `Saat ini <b>${tayang} pengumuman</b> tayang.` : 'Saat ini belum ada pengumuman yang tayang, jadi beranda menampilkan tiga kabar terbaru.'}</span></p>
+    <p class="petunjuk adm-catatan" style="margin:0 0 20px">${ikon('info')}<span>Pengumuman yang tayang menjadi slaid di bagian paling atas beranda, sesudah slaid sapaan, dan berganti otomatis tiap 2 detik. ${tayang ? `Saat ini <b>${tayang} pengumuman</b> tayang.` : 'Saat ini belum ada pengumuman yang tayang, jadi beranda menampilkan tiga kabar terbaru.'}</span></p>
     ${daftar.length ? `<ol class="papan-adm">${daftar.map((p, i) => {
       const [st, teksSt] = statusPapan(p);
       return `<li class="papan-adm-baris" data-id="${esc(p.id)}">
@@ -401,7 +401,7 @@ async function formPengumuman(lama, daftar) {
       </div>
       <div class="papan-form-samping">
         <p class="medan-label">Foto latar</p>
-        <label class="unggah papan-unggah"><input type="file" accept="image/*" hidden data-pg-berkas><span>${ikon('upload')}<b>Pilih foto</b><small>Foto kegiatan atau poster tanpa banyak tulisan. Otomatis diperkecil.</small></span></label>
+        <label class="unggah papan-unggah"><input type="file" accept="image/*" hidden data-pg-berkas><span>${ikon('upload')}<b>Pilih foto</b><small>Foto mendatar (landscape) tampil penuh selebar beranda. Otomatis diperkecil.</small></span></label>
         <button class="tombol-teks" type="button" data-pg-hapus-foto ${gambar ? '' : 'hidden'}>${ikon('x')}Hapus foto</button>
         <p class="medan-label" style="margin-top:14px">Pratinjau</p>
         <div class="papan-pratinjau" data-pg-pratinjau></div>
@@ -418,7 +418,7 @@ async function formPengumuman(lama, daftar) {
     const berkas = e.target.files[0];
     if (!berkas) return;
     try {
-      gambar = await kompres(berkas, { maks: 1600, mutu: 0.74 });
+      gambar = await kompres(berkas, { maks: 1920, mutu: 0.74 });
       if (ukuranDataUrl(gambar) > 900_000) gambar = await kompres(berkas, { maks: 1280, mutu: 0.66 });
       gambarBerubah = gambar;
       segar();
